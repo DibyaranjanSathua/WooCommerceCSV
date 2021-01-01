@@ -3,25 +3,25 @@ SKU: {{ record['CCE_Item_Number'] }}
 Name: {{ record['CCE_Description']|remove_leading_asterisk }}
 Description: |
     {% if record['CRM_Description'] %}
-    {{ record['CRM_Description'] }}
+    <p>{{ record['CRM_Description'] }}</p>
     {% endif %}
     {% if record['Connection'] %}
-    <p> {{ record['Connection'] }} </p>
+    <p>{{ record['Connection'] }}</p>
     {% endif %}
     {% if record['Energy'] %}
-    <p> {{ record['Energy'] }} </p>
+    <p>{{ record['Energy'] }}</p>
     {% endif %}
     {% if record['Type Of Ice'] %}
-    <p> {{ record['Type Of Ice'] }} </p>
+    <p>{{ record['Type Of Ice'] }}</p>
     {% endif %}
     {% if record['Produuction_in_24_Hours'] %}
-    <p> {{ record['Produuction_in_24_Hours'] }} </p>
+    <p>{{ record['Produuction_in_24_Hours'] }}</p>
     {% endif %}
     {% if record['Storage'] %}
-    <p> {{ record['Storage'] }} </p>
+    <p>{{ record['Storage'] }}</p>
     {% endif %}
     {% if record['Storage'] %}
-    <p> {{ record['Storage'] }} </p>
+    <p>{{ record['Storage'] }}</p>
     {% endif %}
     {% if record['Feature_1'] or record['Feature_2'] or record['Feature_3'] or record['Feature_4'] or record['Feature_5'] %}
     <p><strong>Features</strong></p>
@@ -45,6 +45,7 @@ Description: |
     {% endif %}
     {% if record['Benefit_1'] or record['Benefit_2'] or record['Benefit_3'] or record['Benefit_4'] or record['Benefit_5'] %}
     <p><strong>Benefits</strong></p>
+    <ul>
         {% if record['Benefit_1'] %}
         <li>{{ record['Benefit_1'] }}</li>
         {% endif %}
@@ -60,9 +61,11 @@ Description: |
         {% if record['Benefit_5'] %}
         <li>{{ record['Benefit_5'] }}</li>
         {% endif %}
+    </ul>
     {% endif %}
     {% if record['Volts'] or record['Kw'] or record['Amps'] %}
     <p><strong>Specifications</strong></p>
+    <ul>
         {% if record['Volts'] %}
         <li>Volts: {{ record['Volts'] }}</li>
         {% endif %}
@@ -72,15 +75,18 @@ Description: |
         {% if record['Amps'] %}
         <li>Amps: {{ record['Amps'] }}</li>
         {% endif %}
+    </ul>
     {% endif %}
-    {% if record['Warranty Parts (months)'] and record['Warranty Labour (months)'] %}
-    Warranty (Parts/Labour): {{ record['Warranty Parts (months)'] }} / {{ record['Warranty Labour (months)'] }} months
+    {% if record['Warranty Parts (months)'] and record['Warranty Labour (months)'] and record['Warranty Parts (months)'] != 0 and record['Warranty Labour (months)'] != 0 %}
+    <p>Warranty (Parts/Labour): {{ record['Warranty Parts (months)'] }} / {{ record['Warranty Labour (months)'] }} months</p>
+    {% else %}
+    <p>Warranty: 12 months</p>
     {% endif %}
     {% if record['Specsheet_Path'] %}
-    <a href="{{ path_prefix }}{{ record['Specsheet_Path'] }}" target="_blank">Specsheet</a>
+    <p><a href="{{ path_prefix }}{{ record['Specsheet_Path'] }}" target="_blank">Specsheet</a></p>
     {% endif %}
     {% if record['CAD_Plan'] and record['CAD_Side'] and record['CAD_3D'] %}
-    CAD: <a href="{{ path_prefix }}{{ record['CAD_Plan'] }}" target="_blank">Plan</a> | <a href="{{ path_prefix }}{{ record['CAD_Side'] }}" target="_blank">Side</a> | <a href="{{ path_prefix }}{{ record['CAD_3D'] }}" target="_blank">3D</a>
+    <p>CAD: <a href="{{ path_prefix }}{{ record['CAD_Plan'] }}" target="_blank">Plan</a> | <a href="{{ path_prefix }}{{ record['CAD_Side'] }}" target="_blank">Side</a> | <a href="{{ path_prefix }}{{ record['CAD_3D'] }}" target="_blank">3D</a></p>
     {% endif %}
 {% if record['CCE_Description'].startswith("*") %}
 Short description: <p class="non-stock-note">NON-STOCK ITEM</p>
@@ -88,7 +94,7 @@ Short description: <p class="non-stock-note">NON-STOCK ITEM</p>
 Short description:
 {% endif %}
 Regular price: {{ record['RRP ($AUD)'] }}
-Categories: Beverage, Beverage > Ice Machines Refrigeration, Refrigeration > Ice Machines
+Categories: Beverage, Beverage > Ice Machines, Refrigeration, Refrigeration > Ice Machines
 Length (mm): {{ record['Item Dimensions Length']|float * 1000 }}
 Width (mm): {{ record['Item Dimensions Width']|float * 1000 }}
 Height (mm): {{ record['Item Dimensions Height']|float * 1000 }}
