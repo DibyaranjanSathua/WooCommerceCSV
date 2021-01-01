@@ -21,8 +21,10 @@ Description: |
     {% if record['Storage'] %}
     <p>Storage: {{ record['Storage'] }}</p>
     {% endif %}
-    {% if record['Feature_1'] or record['Feature_2'] or record['Feature_3'] or record['Feature_4'] or record['Feature_5'] %}
+    {% if record['Connection'] or record['Energy'] or record['Type Of Ice'] or record['Produuction_in_24_Hours'] or record['Storage'] %}
     <p>&nbsp;</p>
+    {% endif %}
+    {% if record['Feature_1'] or record['Feature_2'] or record['Feature_3'] or record['Feature_4'] or record['Feature_5'] %}
     <p><strong>Features</strong></p>
     <ul>
         {% if record['Feature_1'] %}
@@ -41,9 +43,9 @@ Description: |
         <li>{{ record['Feature_5'] }}</li>
         {% endif %}
     </ul>
+    <p>&nbsp;</p>
     {% endif %}
     {% if record['Benefit_1'] or record['Benefit_2'] or record['Benefit_3'] or record['Benefit_4'] or record['Benefit_5'] %}
-    <p>&nbsp;</p>
     <p><strong>Benefits</strong></p>
     <ul>
         {% if record['Benefit_1'] %}
@@ -62,28 +64,29 @@ Description: |
         <li>{{ record['Benefit_5'] }}</li>
         {% endif %}
     </ul>
-    {% endif %}
-    {% if record['Volts'] or record['Kw'] or record['Amps'] %}
     <p>&nbsp;</p>
+    {% endif %}
+    {% if (record['Volts'] and record['Volts'] != '0') or (record['Kw'] and record['Kw'] != '0') or (record['Amps'] and record['Amps'] != '0') %}
     <p><strong>Specifications</strong></p>
     <ul>
-        {% if record['Volts'] %}
+        {% if record['Volts'] and record['Volts'] != '0' %}
         <li>Volts: {{ record['Volts'] }}</li>
         {% endif %}
-        {% if record['Kw'] %}
+        {% if record['Kw'] and record['Kw'] != '0' %}
         <li>KW: {{ record['Kw'] }}</li>
         {% endif %}
-        {% if record['Amps'] %}
+        {% if record['Amps'] and record['Amps'] != '0' %}
         <li>Amps: {{ record['Amps'] }}</li>
         {% endif %}
     </ul>
-    {% endif %}
     <p>&nbsp;</p>
-    {% if record['Warranty Parts (months)'] and record['Warranty Labour (months)'] and record['Warranty Parts (months)'] != 0 and record['Warranty Labour (months)'] != 0 %}
+    {% endif %}
+    {% if record['Warranty Parts (months)'] and record['Warranty Labour (months)'] and record['Warranty Parts (months)'] != '0' and record['Warranty Labour (months)'] != '0' %}
     <p>Warranty (Parts/Labour): {{ record['Warranty Parts (months)'] }} / {{ record['Warranty Labour (months)'] }} months</p>
     {% else %}
     <p>Warranty: 12 months</p>
     {% endif %}
+    <p>&nbsp;</p>
     {% if record['Specsheet_Path'] %}
     <p><a href="{{ path_prefix }}{{ record['Specsheet_Path'] }}" target="_blank">Specsheet</a></p>
     {% endif %}
