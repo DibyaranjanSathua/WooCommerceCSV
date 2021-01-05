@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+        <title>WooCommerce CSV</title>
+  </head>
+
+    <body>
+        <div class="container">
+            <div class="card text-dark bg-light mb-3 mt-3" style="max-width: 70rem;">
+                <h5 class="card-header">WooCommerce CSV file generation</h5>
+
+                <div class="card-body">
+                    <form action="{{ url_for('form_handling') }}" method="post" enctype="multipart/form-data">
+                        <div class="form-group row mt-3">
+                            <label for="csv" class="col-4 col-form-label text-right">CSV file:</label>
+                            <div class="col-8">
+                                <input type="file" id="csv" name="csv" class="form-control" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group row mt-3">
+                            <label for="mapping" class="col-4 col-form-label text-right">Mapping:</label>
+                            <div class="col-8">
+                                <select id="mapping" name="mapping" class="form-select" required>
+                                    <option selected value>[Select]</option>
+                                    {% for key, value in mapping_files.items() %}
+                                    <option value={{ value }}>{{ key }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+          
+                        <button type="submit" class="btn btn-primary mt-4">Download CSV</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
