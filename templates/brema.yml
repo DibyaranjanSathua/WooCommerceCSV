@@ -1,25 +1,26 @@
 {% set path_prefix = "https://catercentral.com.au/wp-content/uploads/comcater/brema/" %}
+{% set flaskapp_server_path_prefix = "public_html/wp-content/uploads/comcater/brema/" %}
 SKU: {{ record['CCE_Item_Number'] }}
 Name: {{ record['CCE_Description']|remove_leading_asterisk }}
 Description: |
     {% if record['CRM_Description'] %}
-    <p>{{ record['CRM_Description'] }}</p>
+    <p>{{ record['CRM_Description']|indent(4) }}</p>
     <p>&nbsp;</p>
     {% endif %}
     {% if record['Connection'] %}
-    <p>Connection: {{ record['Connection'] }}</p>
+    <p>Connection: {{ record['Connection']|indent(4) }}</p>
     {% endif %}
     {% if record['Energy'] %}
-    <p>Energy: {{ record['Energy'] }}</p>
+    <p>Energy: {{ record['Energy']|indent(4) }}</p>
     {% endif %}
     {% if record['Type Of Ice'] %}
-    <p>Type of Ice: {{ record['Type Of Ice'] }}</p>
+    <p>Type of Ice: {{ record['Type Of Ice']|indent(4) }}</p>
     {% endif %}
     {% if record['Produuction_in_24_Hours'] %}
-    <p>Production (in 24 hours): {{ record['Produuction_in_24_Hours'] }}</p>
+    <p>Production (in 24 hours): {{ record['Produuction_in_24_Hours']|indent(4) }}</p>
     {% endif %}
     {% if record['Storage'] %}
-    <p>Storage: {{ record['Storage'] }}</p>
+    <p>Storage: {{ record['Storage']|indent(4) }}</p>
     {% endif %}
     {% if record['Connection'] or record['Energy'] or record['Type Of Ice'] or record['Produuction_in_24_Hours'] or record['Storage'] %}
     <p>&nbsp;</p>
@@ -28,19 +29,19 @@ Description: |
     <p><strong>Features</strong></p>
     <ul>
         {% if record['Feature_1'] %}
-        <li>{{ record['Feature_1'] }}</li>
+        <li>{{ record['Feature_1']|indent(8) }}</li>
         {% endif %}
         {% if record['Feature_2'] %}
-        <li>{{ record['Feature_2'] }}</li>
+        <li>{{ record['Feature_2']|indent(8) }}</li>
         {% endif %}
         {% if record['Feature_3'] %}
-        <li>{{ record['Feature_3'] }}</li>
+        <li>{{ record['Feature_3']|indent(8) }}</li>
         {% endif %}
         {% if record['Feature_4'] %}
-        <li>{{ record['Feature_4'] }}</li>
+        <li>{{ record['Feature_4']|indent(8) }}</li>
         {% endif %}
         {% if record['Feature_5'] %}
-        <li>{{ record['Feature_5'] }}</li>
+        <li>{{ record['Feature_5']|indent(8) }}</li>
         {% endif %}
     </ul>
     <p>&nbsp;</p>
@@ -49,19 +50,19 @@ Description: |
     <p><strong>Benefits</strong></p>
     <ul>
         {% if record['Benefit_1'] %}
-        <li>{{ record['Benefit_1'] }}</li>
+        <li>{{ record['Benefit_1']|indent(8) }}</li>
         {% endif %}
         {% if record['Benefit_2'] %}
-        <li>{{ record['Benefit_2'] }}</li>
+        <li>{{ record['Benefit_2']|indent(8) }}</li>
         {% endif %}
         {% if record['Benefit_3'] %}
-        <li>{{ record['Benefit_3'] }}</li>
+        <li>{{ record['Benefit_3']|indent(8) }}</li>
         {% endif %}
         {% if record['Benefit_4'] %}
-        <li>{{ record['Benefit_4'] }}</li>
+        <li>{{ record['Benefit_4']|indent(8) }}</li>
         {% endif %}
         {% if record['Benefit_5'] %}
-        <li>{{ record['Benefit_5'] }}</li>
+        <li>{{ record['Benefit_5']|indent(8) }}</li>
         {% endif %}
     </ul>
     <p>&nbsp;</p>
@@ -70,13 +71,13 @@ Description: |
     <p><strong>Specifications</strong></p>
     <ul>
         {% if record['Volts'] and record['Volts'] != '0' %}
-        <li>Volts: {{ record['Volts'] }}</li>
+        <li>Volts: {{ record['Volts']|indent(8) }}</li>
         {% endif %}
         {% if record['Kw'] and record['Kw'] != '0' %}
-        <li>KW: {{ record['Kw'] }}</li>
+        <li>KW: {{ record['Kw']|indent(8) }}</li>
         {% endif %}
         {% if record['Amps'] and record['Amps'] != '0' %}
-        <li>Amps: {{ record['Amps'] }}</li>
+        <li>Amps: {{ record['Amps']|indent(8) }}</li>
         {% endif %}
     </ul>
     <p>&nbsp;</p>
@@ -87,11 +88,11 @@ Description: |
     <p>Warranty: 12 months</p>
     {% endif %}
     <p>&nbsp;</p>
-    {% if record['Specsheet_Path'] %}
+    {% if record['Specsheet_Path']|upper|file_exist(flaskapp_server_path_prefix) %}
     <p><a href="{{ path_prefix }}{{ record['Specsheet_Path']|upper }}" target="_blank">Specsheet</a></p>
     {% endif %}
-    {% if record['CAD_Plan'] and record['CAD_Side'] and record['CAD_3D'] %}
-    <p>CAD: <a href="{{ path_prefix }}{{ record['CAD_Plan']|upper }}" target="_blank">Plan</a> | <a href="{{ path_prefix }}{{ record['CAD_Side']|upper }}" target="_blank">Side</a> | <a href="{{ path_prefix }}{{ record['CAD_3D']|upper }}" target="_blank">3D</a></p>
+    {% if record['CAD_Plan']|upper|file_exist(flaskapp_server_path_prefix) or record['CAD_Side']|upper|file_exist(flaskapp_server_path_prefix) or record['CAD_3D']|upper|file_exist(flaskapp_server_path_prefix) %}
+    <p>CAD: {% if record['CAD_Plan']|upper|file_exist(flaskapp_server_path_prefix) %}<a href="{{ path_prefix }}{{ record['CAD_Plan']|upper }}" target="_blank">Plan</a> |{% endif %} {% if record['CAD_Side']|upper|file_exist(flaskapp_server_path_prefix) %}<a href="{{ path_prefix }}{{ record['CAD_Side']|upper }}" target="_blank">Side</a> |{% endif %} {% if record['CAD_3D']|upper|file_exist(flaskapp_server_path_prefix) %}<a href="{{ path_prefix }}{{ record['CAD_3D']|upper }}" target="_blank">3D</a>{% endif %}</p>
     {% endif %}
 {% if record['CCE_Description'].startswith("*") %}
 Short description: <p class="non-stock-note">NON-STOCK ITEM</p>

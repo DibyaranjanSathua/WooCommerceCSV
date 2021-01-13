@@ -5,6 +5,7 @@ Created on:     29/12/2020, 15:17
 """
 from typing import Union
 import re
+import os
 
 
 def remove_leading_asterisk(string: str):
@@ -18,3 +19,13 @@ def blank_if_zero(value: Union[float, int]):
     if value == 0:
         return ""
     return value
+
+
+def file_exist(filename: str, base_path: str):
+    """ Check if file exist on the server """
+    if not filename:
+        return False
+    filepath = os.path.join("~", base_path, filename)
+    if os.path.isfile(filepath):
+        return True
+    return False
