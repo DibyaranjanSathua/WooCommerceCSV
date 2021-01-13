@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Confirm Table Data</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
+<!--===============================================================================================-->
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
+<!--===============================================================================================-->
+</head>
+<body>
+
+	<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<div class="table100 ver1">
+					<div class="table100-body">
+						<table>
+							<thead>
+								<tr class="row100 head">
+                                    {% for head in headers %}
+									<th class="cell100 column11" colspan="3">{{ head }}</th>
+                                    {% endfor %}
+								</tr>
+							</thead>
+
+							<tbody>
+                                {% for row in records %}
+								<tr class="row100 body">
+                                    {% for head in headers %}
+									<td class="cell100 column11" colspan="3">{{ row[head] }}</td>
+									{% endfor %}
+								</tr>
+                                {% endfor %}
+							</tbody>
+						</table>
+					</div>
+
+					<div class="bottom-div">
+						<form action="{{ url_for('create_or_update') }}" method="post">
+							<input type="hidden" id="csv" name="csv" value="{{ csv }}">
+							<input type="hidden" id="mapping" name="mapping" value="{{ mapping }}">
+							<button type="submit" class="btn btn-info btn-primary custom-btn" style="float: right;">Confirm</button>
+						</form>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script>
+
+<!--===============================================================================================-->
+</body>
+</html>

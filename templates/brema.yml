@@ -1,4 +1,4 @@
-{% set path_prefix = "/wp-uploads/comcater/brema/" %}
+{% set path_prefix = "https://catercentral.com.au/wp-content/uploads/comcater/brema/" %}
 SKU: {{ record['CCE_Item_Number'] }}
 Name: {{ record['CCE_Description']|remove_leading_asterisk }}
 Description: |
@@ -88,22 +88,20 @@ Description: |
     {% endif %}
     <p>&nbsp;</p>
     {% if record['Specsheet_Path'] %}
-    <p><a href="{{ path_prefix }}{{ record['Specsheet_Path'] }}" target="_blank">Specsheet</a></p>
+    <p><a href="{{ path_prefix }}{{ record['Specsheet_Path']|upper }}" target="_blank">Specsheet</a></p>
     {% endif %}
     {% if record['CAD_Plan'] and record['CAD_Side'] and record['CAD_3D'] %}
-    <p>CAD: <a href="{{ path_prefix }}{{ record['CAD_Plan'] }}" target="_blank">Plan</a> | <a href="{{ path_prefix }}{{ record['CAD_Side'] }}" target="_blank">Side</a> | <a href="{{ path_prefix }}{{ record['CAD_3D'] }}" target="_blank">3D</a></p>
+    <p>CAD: <a href="{{ path_prefix }}{{ record['CAD_Plan']|upper }}" target="_blank">Plan</a> | <a href="{{ path_prefix }}{{ record['CAD_Side']|upper }}" target="_blank">Side</a> | <a href="{{ path_prefix }}{{ record['CAD_3D']|upper }}" target="_blank">3D</a></p>
     {% endif %}
 {% if record['CCE_Description'].startswith("*") %}
 Short description: <p class="non-stock-note">NON-STOCK ITEM</p>
-{% else %}
-Short description:
 {% endif %}
 Regular price: {{ record['RRP ($AUD)'] }}
 Categories: Beverage, Beverage > Ice Machines, Refrigeration, Refrigeration > Ice Machines
 Length (mm): {{ (record['Item Dimensions Length']|float * 1000)|blank_if_zero }}
 Width (mm): {{ (record['Item Dimensions Width']|float * 1000)|blank_if_zero }}
 Height (mm): {{ (record['Item Dimensions Height']|float * 1000)|blank_if_zero }}
-Images: {{ path_prefix }}{{ record['Image_Path'] }}
+Images: {{ path_prefix }}{{ record['Image_Path']|upper }}
 Attribute 1 name: Brand
 Attribute 1 value(s): {{ record['Item Class'] }}
 Attribute 2 name: Height

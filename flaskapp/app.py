@@ -4,9 +4,11 @@ Author:         Dibyaranjan Sathua
 Created on:     01/01/2021, 17:49
 """
 import datetime
+import traceback
 from pathlib import Path
 from flask import Flask, render_template, request, send_file
 from src.supplier_csv_to_woocommerce_csv import SupplierCSV2WoocommerceCSV
+from src.product_integration import ProductIntegration
 
 
 PROJECT_ROOT = Path(__file__).parents[1]
@@ -26,23 +28,105 @@ def woocommerce():
     return render_template("home.html", mapping_files=mapping_files)
 
 
-@app.route("/form-handling", methods=['POST'])
-def form_handling():
-    """ Form handling """
+@app.route("/submit", methods=['POST'])
+def submit():
+    """ Form submission """
     now = datetime.datetime.now()
     now_str = now.strftime("%Y%m%d%H%M%S")
     input_csv = request.files.get("csv")
     mapping_file = request.form.get("mapping")
+    downloadcsv_btn = request.form.get("downloadcsv")
+    api_btn = request.form.get("api")
+
+    # Save the input CSV file
+    input_csv_name_orig = Path(input_csv.filename)
+    input_csv_name = f"input_{input_csv_name_orig.stem}_{now_str}.csv"
+    input_csv_path = PROJECT_ROOT / "flaskapp" / app.config["CSV_FILES"] / input_csv_name
+    input_csv.save(input_csv_path)
+
+    obj = SupplierCSV2WoocommerceCSV(
+        csv_file=input_csv_path,
+        template=mapping_file
+    )
+    obj.convert()
+    if downloadcsv_btn is not None and downloadcsv_btn == "downloadcsv":
+        output_csv_name = f"output_{input_csv_name_orig.stem}_{now_str}.csv"
+        output_csv = PROJECT_ROOT / "flaskapp" / app.config["CSV_FILES"] / output_csv_name
+        obj.save_to_csv(output_csv=str(output_csv))
+        return send_file(str(output_csv), as_attachment=True)
+
+    if api_btn is not None and api_btn == "api":
+        if obj.product_records:
+            # CSV file headers
+            headers = list(obj.product_records[0].keys())
+            return render_template(
+                "table.html",
+                headers=headers,
+                records=obj.product_records,
+                csv=input_csv_path,
+                mapping=mapping_file
+            )
+        return "<h3> No Product Record </h3>"
+    return "<h3> Click a valid button </h3>"
+
+
+@app.route("/download-csv", methods=['POST'])
+def download_csv():
+    """ Download output CSV file """
+    now = datetime.datetime.now()
+    now_str = now.strftime("%Y%m%d%H%M%S")
+    input_csv = request.files.get("csv")
+    mapping_file = request.form.get("mapping")
+
     input_csv_name = Path(input_csv.filename)
     output_csv_name = f"{input_csv_name.stem}_{now_str}.csv"
     output_csv = PROJECT_ROOT / "flaskapp" / app.config["CSV_FILES"] / output_csv_name
     obj = SupplierCSV2WoocommerceCSV(
         csv_file=input_csv,
-        template=mapping_file,
-        output_csv=str(output_csv)
+        template=mapping_file
     )
     obj.convert()
+    obj.save_to_csv(output_csv=str(output_csv))
     return send_file(str(output_csv), as_attachment=True)
+
+
+@app.route("/api-confirmation")
+def api_confirmation():
+    """ Display the CSV data and confirm user to upload it to woocommerce """
+    input_csv = request.files.get("csv")
+    mapping_file = request.form.get("mapping")
+    obj = SupplierCSV2WoocommerceCSV(
+        csv_file=input_csv,
+        template=mapping_file
+    )
+    obj.convert()
+    if obj.product_records:
+        headers = list(obj.product_records[0].keys())
+        return render_template("table.html", headers=headers, records=obj.product_records)
+    return "<h3> No Product Record </h3>"
+
+
+@app.route("/create-or-update", methods=['POST'])
+def create_or_update():
+    """ Create or Update products using API """
+    input_csv = request.form.get("csv")
+    mapping_file = request.form.get("mapping")
+    print(input_csv)
+    print(mapping_file)
+    obj = ProductIntegration(
+        csv_file=input_csv,
+        template=mapping_file
+    )
+    obj.setup()
+    try:
+        obj.create_or_update_products()
+    except Exception as err:
+        print(err)
+        print(traceback.print_exc())
+
+    if obj.api_success:
+        return "<h3>Products uploaded successfully</h3>"
+    return "<h3>Products uploading failed</h3>"
 
 
 if __name__ == "__main__":
