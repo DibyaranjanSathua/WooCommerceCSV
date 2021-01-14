@@ -25,7 +25,7 @@ def file_exist(filename: str, base_path: str):
     """ Check if file exist on the server """
     if not filename:
         return False
-    filepath = os.path.join("~", base_path, filename)
+    filepath = os.path.join(os.path.expanduser("~"), base_path, filename)
     if os.path.isfile(filepath):
         return True
     return False

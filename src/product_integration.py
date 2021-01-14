@@ -13,6 +13,7 @@ from config import config
 
 class ProductIntegration:
     """ Product Integration with WooCommerce website using API """
+    PRODUCT_LIMIT = 20
 
     def __init__(self, csv_file: str, template: str):
         self._csv_file: str = csv_file
@@ -66,17 +67,21 @@ class ProductIntegration:
                 create_product_data.append(product)
 
         # Max of 100 objects can be created or updated
-        if len(create_product_data) + len(update_product_data) > 100:
+        if len(create_product_data) + len(update_product_data) > ProductIntegration.PRODUCT_LIMIT:
             # Send create and update request separately
             # Send create request in a batch of 100 objects
             while create_product_data:
-                self._api.create_multiple_products(data=create_product_data[:100])
-                create_product_data = create_product_data[100:]
+                self._api.create_multiple_products(
+                    data=create_product_data[:ProductIntegration.PRODUCT_LIMIT]
+                )
+                create_product_data = create_product_data[ProductIntegration.PRODUCT_LIMIT:]
 
             # Send update request in a batch of 100 objects
             while update_product_data:
-                self._api.update_multiple_products(data=update_product_data[:100])
-                update_product_data = update_product_data[100:]
+                self._api.update_multiple_products(
+                    data=update_product_data[:ProductIntegration.PRODUCT_LIMIT]
+                )
+                update_product_data = update_product_data[ProductIntegration.PRODUCT_LIMIT:]
         else:
             self._api.create_or_update_products(
                 create_data=create_product_data, update_data=update_product_data
