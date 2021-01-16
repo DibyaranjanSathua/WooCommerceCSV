@@ -14,12 +14,37 @@
 
     <div class="container">
         {% if responses %}
-        <h3>Products uploading failed</h3>
+        <h3 class="mt-3 text-danger text-center">Products uploading failed</h3>
         {% for response in responses %}
         <p>{{ response }}</p>
         {% endfor %}
         {% else %}
-        <h3>Products uploaded successfully</h3>
+        <h3 class="mt-3 text-success text-center">Products uploaded successfully</h3>
+        {% if product_status %}
+        <div class="row">
+            <div class="table-responsive mt-5">
+                <table class="table table-sm text-xsmall table-striped">
+                  <thead class="thead-dark">
+                    <tr>
+                        {% for head in table_headers %}
+                        <th class="text-center">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {% for row in product_status %}
+                    <tr>
+                        {% for head in table_headers %}
+                        <td class="text-center">{{ row[head] }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
         {% endif %}
     </div>
 

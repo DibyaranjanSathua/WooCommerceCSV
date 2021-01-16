@@ -36,6 +36,7 @@ class ProductIntegration:
         self._api_data: Optional[List] = None
         self._woocommerce_products: Optional[List] = None
         self._api_responses: List = []
+        self._products_upload_table: List[Dict] = []
 
     def api_setup(self):
         """ Setup WooCommerce API object """
@@ -121,6 +122,16 @@ class ProductIntegration:
             if not success:
                 self._api_responses.append(response)
 
+        # Create a table for the status of products
+        self._products_upload_table += [
+            {"SKU": product.get(ApiProductFields.Sku), "Status": "Created"}
+            for product in create_product_data
+        ]
+        self._products_upload_table += [
+            {"SKU": product.get(ApiProductFields.Sku), "Status": "Updated"}
+            for product in update_product_data
+        ]
+
     @property
     def api_data(self):
         return self._api_data
@@ -128,6 +139,10 @@ class ProductIntegration:
     @property
     def api_responses(self):
         return self._api_responses
+
+    @property
+    def product_upload_table(self):
+        return self._products_upload_table
 
 
 if __name__ == "__main__":

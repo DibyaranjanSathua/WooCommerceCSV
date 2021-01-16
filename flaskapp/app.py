@@ -104,7 +104,14 @@ def create_or_update():
         print(err)
         print(traceback.print_exc())
     print(f"\n\n{'=' * 30}")
-    return render_template("api_status.html", responses=obj.api_responses)
+    if obj.product_upload_table:
+        table_headers = list(obj.product_upload_table[0].keys())
+    return render_template(
+        "api_status.html",
+        responses=obj.api_responses,
+        product_status=obj.product_upload_table,
+        table_headers=table_headers
+    )
 
 
 # @app.route("/download-csv", methods=['POST'])
