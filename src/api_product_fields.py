@@ -9,3 +9,4 @@ class ApiProductFields:
     """ Product properties for WooCommerce API """
     Id = "id"
     Sku = "sku"
+    Images = "images"

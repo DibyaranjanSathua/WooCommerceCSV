@@ -1,61 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<title>Confirm Table Data</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
-<!--===============================================================================================-->
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
-<!--===============================================================================================-->
-</head>
-<body>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<div class="limiter">
-		<div class="container-table100">
-			<div class="wrap-table100">
-				<div class="table100 ver1">
-					<div class="table100-body">
-						<table>
-							<thead>
-								<tr class="row100 head">
-                                    {% for head in headers %}
-									<th class="cell100 column11" colspan="3">{{ head }}</th>
-                                    {% endfor %}
-								</tr>
-							</thead>
+    <!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/table.css') }}">
+    <title>WooCommerce API Confirmation</title>
+  </head>
+  <body>
 
-							<tbody>
-                                {% for row in records %}
-								<tr class="row100 body">
-                                    {% for head in headers %}
-									<td class="cell100 column11" colspan="3">{{ row[head] }}</td>
-									{% endfor %}
-								</tr>
-                                {% endfor %}
-							</tbody>
-						</table>
-					</div>
+  	 <div class="container">
+        <div class="row">
+            <div class="table-responsive mt-5 table100">
+                <table class="table table-sm text-xsmall">
+                  <thead class="thead-dark">
+                    <tr>
+                        {% for head in headers %}
+                        <th class="text-center">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                  </thead>
 
-					<div class="bottom-div">
-						<form action="{{ url_for('create_or_update') }}" method="post">
-							<input type="hidden" id="csv" name="csv" value="{{ csv }}">
-							<input type="hidden" id="mapping" name="mapping" value="{{ mapping }}">
-							<button type="submit" class="btn btn-info btn-primary custom-btn" style="float: right;">Confirm</button>
-						</form>
-					</div>
+                  <tbody>
+                    {% for row in records %}
+                    <tr>
+                        {% for head in headers %}
+                        <td class="text-center">{{ row[head] }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+        </div>
 
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="bottom-div mt-3">
+            <form action="{{ url_for('create_or_update') }}" method="post" id="api-confirm-form">
+                <input type="hidden" id="csv" name="csv" value="{{ csv }}">
+                <input type="hidden" id="mapping" name="mapping" value="{{ mapping }}">
+                <input type="hidden" id="update_image" name="update_image" value="{{ update_image }}">
+                <button type="submit" id="api-confirm-btn" class="btn btn-primary" style="float: right;">Confirm</button>
+            </form>
+        </div>
+    </div>
 
 
-<!--===============================================================================================-->
-	<script src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      $('#api-confirm-btn').click(function() {
+        $('#api-confirm-btn').html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span> Processing...').attr('disabled', true);
+        $('#api-confirm-form').submit();
+      });
+    </script>
 
-<!--===============================================================================================-->
-</body>
+  </body>
 </html>

@@ -32,12 +32,12 @@ class MapCsvToApi:
         parents = []        # List of dict [{"id": 123}. {"id": 456}]
         for name in cat_list:
             if parents:
-                woocommerce_categories = self._api.get_all_categories(
+                woocommerce_categories, _ = self._api.get_all_categories(
                     search=name,
                     parent=parents[-1]["id"]
                 )
             else:
-                woocommerce_categories = self._api.get_all_categories(search=name)
+                woocommerce_categories, _ = self._api.get_all_categories(search=name)
             filtered_category = self.filter_category(woocommerce_categories, name)
             parents.append({"id": filtered_category["id"]})
         return parents[-1]
@@ -58,6 +58,26 @@ class MapCsvToApi:
         for data in self._api_data:
             data["categories"] = self.map_csv_category(data["categories"])
             # data["categories"] = [{'id': 49}, {'id': 60}, {'id': 146}, {'id': 1882}]
+
+    def map_csv_attributes(self, attributes: List[tuple]):
+        """ Map all the attributes from CSV to API data """
+        woocommerce_attributes, _ = self._api.get_all_attributes()
+        api_attributes = []
+        for index, attrs in enumerate(attributes):
+            woo_attr = next((x for x in woocommerce_attributes if x["name"] == attrs[0]), None)
+            woo_attr_id = 0
+            woo_attr_name = attrs[0]
+            if woo_attr:
+                woo_attr_id = woo_attr["id"]
+                woo_attr_name = woo_attr["name"]
+            api_attributes.append({
+                "id": woo_attr_id,
+                "name": woo_attr_name,
+                "position": index,
+                "visible": True,
+                "options": [attrs[1]]
+            })
+        return api_attributes
 
     def csv_attributes_to_api(self):
         """ Remove individual CSV attributes and create a single attributes for api """
@@ -116,20 +136,6 @@ class MapCsvToApi:
             "width": width,
             "height": height
         }
-
-    @staticmethod
-    def map_csv_attributes(attributes: List[tuple]):
-        """ Map all the attributes from CSV to API data """
-        api_attributes = []
-        for index, attrs in enumerate(attributes):
-            api_attributes.append({
-                "id": 0,
-                "name": attrs[0],
-                "position": index,
-                "visible": False,
-                "options": [attrs[1]]
-            })
-        return api_attributes
 
     @staticmethod
     def map_csv_images(images: str):

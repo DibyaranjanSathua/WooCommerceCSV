@@ -1,0 +1,25 @@
+.table100 {
+  max-height: 600px;
+  overflow: auto;
+  background-color: #fff;
+}
+.table100 th {
+  font-size: 18px;
+  color: #fff;
+  line-height: 1.4;
+  background-color: #0D47A1;
+}
+
+.table100 td {
+  font-size: 15px;
+  color: #808080;
+  line-height: 1.4;
+}
+
+.table100 tr:nth-child(even) {
+  background-color: #B3E5FC;
+}
+
+.table100 tr:nth-child(odd) {
+  background-color: #D1C4E9;
+}

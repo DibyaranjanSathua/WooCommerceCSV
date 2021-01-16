@@ -3,7 +3,7 @@ File:           woocommerce_api.py
 Author:         Dibyaranjan Sathua
 Created on:     27/12/2020, 23:12
 """
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 from woocommerce import API
 from src.api_product_fields import ApiProductFields
 
@@ -22,59 +22,58 @@ class WooCommerceAPI:
             version="wc/v3",
             timeout=300
         )
-        self._success: bool = False
 
-    def get_all_products(self, sku: Optional[List] = None):
+    def get_all_products(self, skus: Optional[List] = None):
         """ Get a list of all products """
-        self._success = False
+        success = False
         endpoint = "products"
         params = {"per_page": 100}
-        if sku is not None:
-            params["sku"] = ",".join(sku)
-            params["per_page"] = len(sku)
+        if skus is not None:
+            params["sku"] = ",".join(skus)
+            params["per_page"] = len(skus)
         response = self._wcapi.get(endpoint=endpoint, params=params)
         if response.status_code == 200:
-            self._success = True
-        return response.json()
+            success = True
+        return response.json(), success
 
-    def get_all_products_as_dict(self, sku: Optional[List] = None) -> Dict:
+    def get_all_products_as_dict(self, skus: Optional[List] = None) -> Tuple[Dict, bool]:
         """ Convert list of products to dict of products with key as SKU """
-        products = self.get_all_products(sku)
-        return {product[ApiProductFields.Sku]: product for product in products}
+        products, success = self.get_all_products(skus)
+        return {product[ApiProductFields.Sku]: product for product in products}, success
     
     def update_product(self, product_id: int, data: dict):
         """ Update a product based on id """
-        self._success = False
+        success = False
         endpoint = f"products/{product_id}"
         response = self._wcapi.put(endpoint=endpoint, data=data)
         if response.status_code == 200:
-            self._success = True
-        return response.json()
+            success = True
+        return response.json(), success
 
     def update_multiple_products(self, data: List[dict]):
         """ Update multiple products in a single API call """
-        self._success = False
+        success = False
         endpoint = f"products/batch"
         data = {"update": data}
         response = self._wcapi.post(endpoint=endpoint, data=data)
         if response.status_code == 200:
-            self._success = True
-        return response.json()
+            success = True
+        return response.json(), success
 
     def create_multiple_products(self, data: List[dict]):
         """ Create multiple products in a single API call """
-        self._success = False
+        success = False
         endpoint = f"products/batch"
         data = {"create": data}
         response = self._wcapi.post(endpoint=endpoint, data=data)
         if response.status_code in (200, 201):
-            self._success = True
-        return response.json()
+            success = True
+        return response.json(), success
 
     def create_or_update_products(self, create_data: List[Dict], update_data: List[Dict]):
         """ Create or Update products in batch in a single API call """
         # Max of 100 objects can be created or updated
-        self._success = False
+        success = False
         endpoint = f"products/batch"
         data = {
             "create": create_data,
@@ -83,8 +82,8 @@ class WooCommerceAPI:
         response = self._wcapi.post(endpoint=endpoint, data=data)
         if response.status_code == 200:
             print("create or update product request is success")
-            self._success = True
-        return response.json()
+            success = True
+        return response.json(), success
 
     def get_all_categories(
             self,
@@ -93,6 +92,7 @@ class WooCommerceAPI:
             parent: Optional[int] = None
     ):
         """ Get list of categories """
+        success = False
         endpoint = f"products/categories"
         params = {}
         if search is not None:
@@ -102,15 +102,21 @@ class WooCommerceAPI:
         if parent is not None:
             params["parent"] = parent
         response = self._wcapi.get(endpoint=endpoint, params=params)
-        return response.json()
+        if response.status_code == 200:
+            success = True
+        return response.json(), success
 
-    @property
-    def success(self):
-        return self._success
+    def get_all_attributes(self):
+        """ Get a list of product attributes """
+        success = False
+        endpoint = f"products/attributes"
+        response = self._wcapi.get(endpoint=endpoint)
+        if response.status_code == 200:
+            success = True
+        return response.json(), success
 
 
 if __name__ == "__main__":
-    from slugify import slugify
     from config import config
     from src.supplier_csv_to_woocommerce_csv import SupplierCSV2WoocommerceCSV
     obj = WooCommerceAPI(
@@ -124,5 +130,6 @@ if __name__ == "__main__":
     # obj1.convert()
     # print(obj1.product_records)
     # print(obj.get_all_products())
-    result = obj.get_all_categories(search="Beverage")
+    # result = obj.get_all_categories(search="Beverage")
+    result = obj.get_all_attributes()
     print(result)

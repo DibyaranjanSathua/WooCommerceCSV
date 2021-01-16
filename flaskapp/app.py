@@ -35,9 +35,11 @@ def submit():
     now_str = now.strftime("%Y%m%d%H%M%S")
     input_csv = request.files.get("csv")
     mapping_file = request.form.get("mapping")
+    update_image = request.form.get("updateImageOptions")
     downloadcsv_btn = request.form.get("downloadcsv")
     api_btn = request.form.get("api")
 
+    print(update_image)
     # Save the input CSV file
     input_csv_name_orig = Path(input_csv.filename)
     input_csv_name = f"input_{input_csv_name_orig.stem}_{now_str}.csv"
@@ -64,46 +66,11 @@ def submit():
                 headers=headers,
                 records=obj.product_records,
                 csv=input_csv_path,
-                mapping=mapping_file
+                mapping=mapping_file,
+                update_image=update_image
             )
         return "<h3> No Product Record </h3>"
     return "<h3> Click a valid button </h3>"
-
-
-@app.route("/download-csv", methods=['POST'])
-def download_csv():
-    """ Download output CSV file """
-    now = datetime.datetime.now()
-    now_str = now.strftime("%Y%m%d%H%M%S")
-    input_csv = request.files.get("csv")
-    mapping_file = request.form.get("mapping")
-
-    input_csv_name = Path(input_csv.filename)
-    output_csv_name = f"{input_csv_name.stem}_{now_str}.csv"
-    output_csv = PROJECT_ROOT / "flaskapp" / app.config["CSV_FILES"] / output_csv_name
-    obj = SupplierCSV2WoocommerceCSV(
-        csv_file=input_csv,
-        template=mapping_file
-    )
-    obj.convert()
-    obj.save_to_csv(output_csv=str(output_csv))
-    return send_file(str(output_csv), as_attachment=True)
-
-
-@app.route("/api-confirmation")
-def api_confirmation():
-    """ Display the CSV data and confirm user to upload it to woocommerce """
-    input_csv = request.files.get("csv")
-    mapping_file = request.form.get("mapping")
-    obj = SupplierCSV2WoocommerceCSV(
-        csv_file=input_csv,
-        template=mapping_file
-    )
-    obj.convert()
-    if obj.product_records:
-        headers = list(obj.product_records[0].keys())
-        return render_template("table.html", headers=headers, records=obj.product_records)
-    return "<h3> No Product Record </h3>"
 
 
 @app.route("/create-or-update", methods=['POST'])
@@ -111,23 +78,70 @@ def create_or_update():
     """ Create or Update products using API """
     input_csv = request.form.get("csv")
     mapping_file = request.form.get("mapping")
+    update_image = request.form.get("update_image")
+    print(f"\n\n{'=' * 30}")
+    print(f"Processing on {datetime.datetime.now()}")
+    print(f"\n\n{'=' * 30}")
     print(input_csv)
     print(mapping_file)
-    obj = ProductIntegration(
-        csv_file=input_csv,
-        template=mapping_file
-    )
+    print(update_image)
+    if update_image == "newProducts":
+        obj = ProductIntegration(
+            csv_file=input_csv,
+            template=mapping_file,
+            update_image_mode=ProductIntegration.UpdateImageCode.NewProducts
+        )
+    else:
+        obj = ProductIntegration(
+            csv_file=input_csv,
+            template=mapping_file,
+            update_image_mode=ProductIntegration.UpdateImageCode.ALlProducts
+        )
     obj.setup()
     try:
         obj.create_or_update_products()
     except Exception as err:
         print(err)
         print(traceback.print_exc())
+    print(f"\n\n{'=' * 30}")
+    return render_template("api_status.html", responses=obj.api_responses)
 
-    if obj.api_success:
-        return "<h3>Products uploaded successfully</h3>"
-    return "<h3>Products uploading failed</h3>"
+
+# @app.route("/download-csv", methods=['POST'])
+# def download_csv():
+#     """ Download output CSV file """
+#     now = datetime.datetime.now()
+#     now_str = now.strftime("%Y%m%d%H%M%S")
+#     input_csv = request.files.get("csv")
+#     mapping_file = request.form.get("mapping")
+#
+#     input_csv_name = Path(input_csv.filename)
+#     output_csv_name = f"{input_csv_name.stem}_{now_str}.csv"
+#     output_csv = PROJECT_ROOT / "flaskapp" / app.config["CSV_FILES"] / output_csv_name
+#     obj = SupplierCSV2WoocommerceCSV(
+#         csv_file=input_csv,
+#         template=mapping_file
+#     )
+#     obj.convert()
+#     obj.save_to_csv(output_csv=str(output_csv))
+#     return send_file(str(output_csv), as_attachment=True)
+#
+#
+# @app.route("/api-confirmation")
+# def api_confirmation():
+#     """ Display the CSV data and confirm user to upload it to woocommerce """
+#     input_csv = request.files.get("csv")
+#     mapping_file = request.form.get("mapping")
+#     obj = SupplierCSV2WoocommerceCSV(
+#         csv_file=input_csv,
+#         template=mapping_file
+#     )
+#     obj.convert()
+#     if obj.product_records:
+#         headers = list(obj.product_records[0].keys())
+#         return render_template("table.html", headers=headers, records=obj.product_records)
+#     return "<h3> No Product Record </h3>"
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
