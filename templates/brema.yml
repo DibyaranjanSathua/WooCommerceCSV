@@ -102,7 +102,9 @@ Categories: Beverage, Beverage > Ice Machines, Refrigeration, Refrigeration > Ic
 Length (mm): {{ (record['Item Dimensions Length']|float * 1000)|blank_if_zero }}
 Width (mm): {{ (record['Item Dimensions Width']|float * 1000)|blank_if_zero }}
 Height (mm): {{ (record['Item Dimensions Height']|float * 1000)|blank_if_zero }}
+{% if record['Image_Path']|upper|file_exist(flaskapp_server_path_prefix) %}
 Images: {{ path_prefix }}{{ record['Image_Path']|upper }}
+{% endif %}
 Attribute 1 name: Brand
 Attribute 1 value(s): {{ record['Item Class'] }}
 Attribute 2 name: Height

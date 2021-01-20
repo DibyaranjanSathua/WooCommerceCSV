@@ -20,7 +20,7 @@ class WooCommerceAPI:
             consumer_key=username,
             consumer_secret=password,
             version="wc/v3",
-            timeout=300
+            timeout=600
         )
 
     def get_all_products(self, skus: Optional[List] = None):

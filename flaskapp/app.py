@@ -81,7 +81,7 @@ def create_or_update():
     update_image = request.form.get("update_image")
     print(f"\n\n{'=' * 30}")
     print(f"Processing on {datetime.datetime.now()}")
-    print(f"\n\n{'=' * 30}")
+    print(f"{'=' * 30}")
     print(input_csv)
     print(mapping_file)
     print(update_image)

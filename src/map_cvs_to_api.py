@@ -104,7 +104,8 @@ class MapCsvToApi:
     def csv_images_to_api(self):
         """ Map csv images to api images """
         for data in self._api_data:
-            data["images"] = self.map_csv_images(data["images"])
+            if "images" in data:
+                data["images"] = self.map_csv_images(data["images"])
 
     def map(self):
         """ Map data to api """
