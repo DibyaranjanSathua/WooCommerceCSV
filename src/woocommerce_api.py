@@ -4,6 +4,7 @@ Author:         Dibyaranjan Sathua
 Created on:     27/12/2020, 23:12
 """
 from typing import List, Dict, Optional, Tuple
+import os
 from woocommerce import API
 from src.api_product_fields import ApiProductFields
 
@@ -15,13 +16,15 @@ class WooCommerceAPI:
     def __init__(self, username: str, password: str):
         self._username: str = username
         self._password: str = password
+        timeout = os.environ.get("API_TIMEOUT") or 600
         self._wcapi = API(
             url=WooCommerceAPI.BASE_URL,
             consumer_key=username,
             consumer_secret=password,
             version="wc/v3",
-            timeout=600
+            timeout=timeout
         )
+        print(f"API timeout set to {timeout}")
 
     def get_all_products(self, skus: Optional[List] = None):
         """ Get a list of all products """

@@ -5,6 +5,7 @@ Created on:     10/01/21, 10:49 pm
 """
 from typing import List, Optional, Dict
 from enum import IntEnum
+import os
 from src.woocommerce_api import WooCommerceAPI
 from src.api_product_fields import ApiProductFields
 from src.supplier_csv_to_woocommerce_csv import SupplierCSV2WoocommerceCSV
@@ -18,7 +19,7 @@ class ProductIntegration:
         ALlProducts = 1
         NewProducts = 2     # Update for new products or for products that don't have images
 
-    PRODUCT_LIMIT = 20
+    PRODUCT_LIMIT = os.environ.get("PRODUCT_LIMIT") or 20
     UPDATE_IMAGE_MODE = UpdateImageCode.ALlProducts
 
     def __init__(
@@ -65,6 +66,7 @@ class ProductIntegration:
 
     def create_or_update_products(self):
         """ Create new products or update existing products """
+        print(f"Using product limit of {ProductIntegration.PRODUCT_LIMIT} for batch request")
         create_product_data: List = []
         update_product_data: List = []
 
@@ -91,6 +93,16 @@ class ProductIntegration:
             else:
                 print(f"Creating product for SKU {product_sku}")
                 create_product_data.append(product)
+
+        # Create a table for the status of products
+        self._products_upload_table += [
+            {"SKU": product.get(ApiProductFields.Sku), "Status": "Created"}
+            for product in create_product_data
+        ]
+        self._products_upload_table += [
+            {"SKU": product.get(ApiProductFields.Sku), "Status": "Updated"}
+            for product in update_product_data
+        ]
 
         # Max of 100 objects can be created or updated
         if len(create_product_data) + len(update_product_data) > ProductIntegration.PRODUCT_LIMIT:
@@ -122,15 +134,6 @@ class ProductIntegration:
             if not success:
                 self._api_responses.append(response)
 
-        # Create a table for the status of products
-        self._products_upload_table += [
-            {"SKU": product.get(ApiProductFields.Sku), "Status": "Created"}
-            for product in create_product_data
-        ]
-        self._products_upload_table += [
-            {"SKU": product.get(ApiProductFields.Sku), "Status": "Updated"}
-            for product in update_product_data
-        ]
 
     @property
     def api_data(self):

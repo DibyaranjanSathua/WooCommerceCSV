@@ -104,6 +104,7 @@ def create_or_update():
         print(err)
         print(traceback.print_exc())
     print(f"\n\n{'=' * 30}")
+    table_headers = []
     if obj.product_upload_table:
         table_headers = list(obj.product_upload_table[0].keys())
     return render_template(
