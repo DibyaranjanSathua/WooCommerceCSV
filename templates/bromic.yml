@@ -1,0 +1,35 @@
+{% set path_prefix = "https://catercentral.com.au/wp-content/uploads/bromic" %}
+{% if record['M'] %}
+SKU: {{ record['M'] }}
+Name: {{ record['meta_title']|remove_trailing_bromic|add_leading_bromic|repair_utf8_encoding }}
+Description: |
+    {% if record['description'] %}
+    {{ record['description']|remove_div_span_tags|format_description|repair_utf8_encoding|indent(4) }}
+    <p>&nbsp;</p>
+    {% endif %}
+    {% if record['short_description'] %}
+    {{ record['short_description']|remove_div_span_tags|format_description|repair_utf8_encoding|indent(4) }}
+    {% else %}
+    <p>{{ record['meta_title']|remove_trailing_bromic|add_leading_bromic|repair_utf8_encoding|indent(4) }}</p>
+    {% endif %}
+    <p>Warranty (Parts/Labour): {{ record['W PL']|non_zero_warranty }} year(s)</p>
+    <p><strong>Files:</strong></p>
+    <p>{{ record['additional_attributes']|product_files(path_prefix) }}</p>
+Regular price: {{ record['price'] }}
+Categories: {{ record['category'] }}
+Length (mm): {{ record['D']|float|blank_if_zero }}
+Width (mm): {{ record['W']|float|blank_if_zero }}
+Height (mm): {{ record['H']|float|blank_if_zero }}
+Images: {{ record['base_image']|create_image(path_prefix) }},{{ record['additional_images']|create_image(path_prefix) }}
+Attribute 1 name: Brand
+Attribute 1 value(s): Bromic
+Attribute 2 name: Height
+Attribute 2 value(s): {{ record['H']|float|blank_if_zero }}
+Attribute 3 name: Depth
+Attribute 3 value(s): {{ record['D']|float|blank_if_zero }}
+Attribute 4 name: Width
+Attribute 4 value(s): {{ record['W']|float|blank_if_zero }}
+Attribute 5 name: Volume
+Attribute 5 value(s): {{ record['V']|format_volume|blank_if_zero }}
+
+{% endif %}

@@ -1,5 +1,6 @@
 {% set path_prefix = "https://catercentral.com.au/wp-content/uploads/comcater/brema/" %}
 {% set flaskapp_server_path_prefix = "public_html/wp-content/uploads/comcater/brema/" %}
+{% if record['Catergory']|upper == 'EQUIPMENT' %}
 SKU: {{ record['CCE_Item_Number'] }}
 Name: {{ record['CCE_Description']|remove_leading_asterisk }}
 Description: |
@@ -113,3 +114,4 @@ Attribute 3 name: Depth
 Attribute 3 value(s): {{ (record['Item Dimensions Length']|float * 1000)|blank_if_zero }}
 Attribute 4 name: Width
 Attribute 4 value(s): {{ (record['Item Dimensions Width']|float * 1000)|blank_if_zero }}
+{% endif %}
