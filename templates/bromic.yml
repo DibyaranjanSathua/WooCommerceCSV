@@ -1,4 +1,5 @@
 {% set path_prefix = "https://catercentral.com.au/wp-content/uploads/bromic" %}
+{% set flaskapp_server_path_prefix = "public_html/wp-content/uploads/comcater/brema/" %}
 {% if record['M'] %}
 SKU: {{ record['M'] }}
 Name: {{ record['meta_title']|remove_trailing_bromic|add_leading_bromic|repair_utf8_encoding }}
@@ -14,8 +15,8 @@ Description: |
     {% endif %}
     <p>Warranty (Parts/Labour): {{ record['W PL']|non_zero_warranty }} year(s)</p>
     <p><strong>Files:</strong></p>
-    <p>{{ record['additional_attributes']|product_files(path_prefix) }}</p>
-Regular price: {{ record['price'] }}
+    <p>{{ record['additional_attributes']|product_files(path_prefix, flaskapp_server_path_prefix) }}</p>
+Regular price: {{ record['price']|filter_poa_price }}
 Categories: {{ record['category'] }}
 Length (mm): {{ record['D']|float|blank_if_zero }}
 Width (mm): {{ record['W']|float|blank_if_zero }}
@@ -29,7 +30,11 @@ Attribute 3 name: Depth
 Attribute 3 value(s): {{ record['D']|float|blank_if_zero }}
 Attribute 4 name: Width
 Attribute 4 value(s): {{ record['W']|float|blank_if_zero }}
+{% if record['V']|volume_is_in_liter %}
 Attribute 5 name: Volume
 Attribute 5 value(s): {{ record['V']|format_volume|blank_if_zero }}
-
+{% elif record['V']|volume_is_in_kg %}
+Attribute 5 name: Capacity
+Attribute 5 value(s): {{ record['V']|format_volume|blank_if_zero }}
+{% endif %}
 {% endif %}

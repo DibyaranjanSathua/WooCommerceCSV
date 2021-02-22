@@ -64,7 +64,7 @@ def non_zero_warranty(string: str):
     return "1" if string == "0" else string
 
 
-def product_files(string: str, path_prefix: str):
+def product_files(string: str, path_prefix: str, base_path: str):
     """ Extract product files from additional attributes. Used in bromic """
     regex = re.compile(r"products_file_text=(.*?),")
     match_str = regex.search(string)
@@ -79,7 +79,11 @@ def product_files(string: str, path_prefix: str):
         name, path = file.split("&")
         # Remove Download from the name
         name = name.replace("Download", "").strip()
-        output += f'<a href="{path_prefix}{path}" target="_blank">{name}</a> | '
+        # base path is used to check if file exists or not
+        # path will have leading /. We have to remove it while using in os.path.join
+        local_filepath = os.path.join(os.path.expanduser("~"), base_path, path.lstrip("/"))
+        if os.path.isfile(local_filepath):
+            output += f'<a href="{path_prefix}{path}" target="_blank">{name}</a> | '
 
     output = output.strip().strip("|").strip()
     return output
@@ -106,8 +110,23 @@ def repair_utf8_encoding(string: str):
 
 def format_volume(string: str):
     """ Format volume. Used in bromic """
-    regex = re.compile(r"(\d)+")
+    regex = re.compile(r"(\d+)")
     match_str = regex.search(string)
     if match_str is None:
         return 0
     return float(match_str.group(1))
+
+
+def filter_poa_price(string: str):
+    """ Check if price is POA return blank string. Used in bromic """
+    return "" if "POA" in string.upper() else string
+
+
+def volume_is_in_liter(string: str):
+    """ Check if the volumn is in Litre unit. Used in bromic """
+    return string.lower().endswith("l")
+
+
+def volume_is_in_kg(string: str):
+    """ check if volume is in kg. Used in bromic """
+    return string.lower().endswith("kg")
