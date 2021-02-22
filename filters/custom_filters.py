@@ -42,8 +42,10 @@ def add_leading_bromic(string: str):
     """ Add leading bromic if not present. Used in bromic """
     regex = re.compile(r"^\s*Bromic")
     if regex.search(string) is None:
-        return f"Bromic {string}"
-    return string
+        string = f"Bromic {string}"
+    regex = re.compile(r"^\s*Bromic\s*-\s*")
+    # Remove the dash after Bromic
+    return regex.sub("Bromic ", string, re.IGNORECASE)
 
 
 def remove_div_span_tags(string: str):

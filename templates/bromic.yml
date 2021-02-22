@@ -2,7 +2,13 @@
 {% set flaskapp_server_path_prefix = "public_html/wp-content/uploads/comcater/brema/" %}
 {% if record['M'] %}
 SKU: {{ record['M'] }}
+{% if record['meta_title'] %}
 Name: {{ record['meta_title']|remove_trailing_bromic|add_leading_bromic|repair_utf8_encoding }}
+{% elif record['name'] %}
+Name: {{ record['name']|remove_trailing_bromic|add_leading_bromic|repair_utf8_encoding }}
+{% else %}
+Name: {{ record['M']|remove_trailing_bromic|add_leading_bromic|repair_utf8_encoding }}
+{% endif %}
 Description: |
     {% if record['description'] %}
     {{ record['description']|remove_div_span_tags|format_description|repair_utf8_encoding|indent(4) }}
