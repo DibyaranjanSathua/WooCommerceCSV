@@ -34,7 +34,7 @@ def file_exist(filename: str, base_path: str):
 
 def remove_trailing_bromic(string: str):
     """ Remove bromic from the end of the string. Used in bromic """
-    regex = re.compile(r"\s*-\s*Bromic\s*$")
+    regex = re.compile(r"\s+[^\s]\s+Bromic(?:\s+Refrigeration)?\s*$")
     return regex.sub("", string, re.IGNORECASE)
 
 

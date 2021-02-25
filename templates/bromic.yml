@@ -3,21 +3,21 @@
 {% if record['M'] %}
 SKU: {{ record['M'] }}
 {% if record['meta_title'] %}
-Name: {{ record['meta_title']|remove_trailing_bromic|add_leading_bromic|repair_utf8_encoding }}
+Name: {{ record['meta_title']|repair_utf8_encoding|remove_trailing_bromic|add_leading_bromic }}
 {% elif record['name'] %}
-Name: {{ record['name']|remove_trailing_bromic|add_leading_bromic|repair_utf8_encoding }}
+Name: {{ record['name']|repair_utf8_encoding|remove_trailing_bromic|add_leading_bromic }}
 {% else %}
-Name: {{ record['M']|remove_trailing_bromic|add_leading_bromic|repair_utf8_encoding }}
+Name: {{ record['M']|repair_utf8_encoding|remove_trailing_bromic|add_leading_bromic }}
 {% endif %}
 Description: |
     {% if record['description'] %}
-    {{ record['description']|remove_div_span_tags|format_description|repair_utf8_encoding|indent(4) }}
+    {{ record['description']|repair_utf8_encoding|remove_div_span_tags|format_description|indent(4) }}
     <p>&nbsp;</p>
     {% endif %}
     {% if record['short_description'] %}
-    {{ record['short_description']|remove_div_span_tags|format_description|repair_utf8_encoding|indent(4) }}
+    {{ record['short_description']|repair_utf8_encoding|remove_div_span_tags|format_description|indent(4) }}
     {% else %}
-    <p>{{ record['meta_title']|remove_trailing_bromic|add_leading_bromic|repair_utf8_encoding|indent(4) }}</p>
+    <p>{{ record['meta_title']|repair_utf8_encoding|remove_trailing_bromic|add_leading_bromic|indent(4) }}</p>
     {% endif %}
     <p>Warranty (Parts/Labour): {{ record['W PL']|non_zero_warranty }} year(s)</p>
     <p><strong>Files:</strong></p>
