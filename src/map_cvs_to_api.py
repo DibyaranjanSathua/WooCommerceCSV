@@ -38,6 +38,9 @@ class MapCsvToApi:
                 )
             else:
                 woocommerce_categories, _ = self._api.get_all_categories(search=name)
+
+            if not woocommerce_categories:
+                print(f"No woocommerce categories found for name {name}")
             filtered_category = self.filter_category(woocommerce_categories, name)
             parents.append({"id": filtered_category["id"]})
         return parents[-1]

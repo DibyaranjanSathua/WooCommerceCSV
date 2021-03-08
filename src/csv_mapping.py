@@ -25,4 +25,6 @@ CSV_MAPPING = {
     "Attribute 3 value(s)": "attribute_3_value",
     "Attribute 4 name": "attribute_4_name",
     "Attribute 4 value(s)": "attribute_4_value",
+    "Attribute 5 name": "attribute_5_name",
+    "Attribute 5 value(s)": "attribute_5_value",
 }
