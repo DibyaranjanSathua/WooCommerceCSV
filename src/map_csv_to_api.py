@@ -1,5 +1,5 @@
 """
-File:           map_cvs_to_api.py
+File:           map_csv_to_api.py
 Author:         Dibyaranjan Sathua
 Created on:     13/01/21, 7:54 am
 """

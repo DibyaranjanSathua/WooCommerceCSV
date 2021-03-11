@@ -28,16 +28,25 @@ class WooCommerceAPI:
 
     def get_all_products(self, skus: Optional[List] = None):
         """ Get a list of all products """
-        success = False
+        success = True
         endpoint = "products"
         params = {"per_page": 100}
-        if skus is not None:
-            params["sku"] = ",".join(skus)
-            params["per_page"] = len(skus)
-        response = self._wcapi.get(endpoint=endpoint, params=params)
-        if response.status_code == 200:
-            success = True
-        return response.json(), success
+        if skus is None:
+            response = self._wcapi.get(endpoint=endpoint, params=params)
+            return response.json()
+
+        products = []
+        while skus:
+            skus_in_request = skus[:100]
+            skus = skus[100:]
+            params["sku"] = ",".join(skus_in_request)
+            params["per_page"] = len(skus_in_request)
+            response = self._wcapi.get(endpoint=endpoint, params=params)
+            if response.ok:
+                products += response.json()
+            else:
+                success = False
+        return products, success
 
     def get_all_products_as_dict(self, skus: Optional[List] = None) -> Tuple[Dict, bool]:
         """ Convert list of products to dict of products with key as SKU """

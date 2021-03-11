@@ -9,6 +9,7 @@ from pathlib import Path
 from flask import Flask, render_template, request, send_file
 from src.supplier_csv_to_woocommerce_csv import SupplierCSV2WoocommerceCSV
 from src.product_integration import ProductIntegration
+from src.check_categories import CheckCategories
 
 
 PROJECT_ROOT = Path(__file__).parents[1]
@@ -38,6 +39,7 @@ def submit():
     update_image = request.form.get("updateImageOptions")
     downloadcsv_btn = request.form.get("downloadcsv")
     api_btn = request.form.get("api")
+    checkcategories_btn = request.form.get("checkcategories")
 
     print(update_image)
     # Save the input CSV file
@@ -70,6 +72,14 @@ def submit():
                 update_image=update_image
             )
         return "<h3> No Product Record </h3>"
+
+    if checkcategories_btn is not None and checkcategories_btn == "checkcategories":
+        check_categories = CheckCategories(woocommerce_records=obj.product_records)
+        check_categories.find_missing_category()
+        return render_template(
+            "categories_status.html",
+            missing_categories=check_categories.missing_categories
+        )
     return "<h3> Click a valid button </h3>"
 
 

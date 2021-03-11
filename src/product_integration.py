@@ -9,7 +9,7 @@ import os
 from src.woocommerce_api import WooCommerceAPI
 from src.api_product_fields import ApiProductFields
 from src.supplier_csv_to_woocommerce_csv import SupplierCSV2WoocommerceCSV
-from src.map_cvs_to_api import MapCsvToApi
+from src.map_csv_to_api import MapCsvToApi
 from config import config
 
 
