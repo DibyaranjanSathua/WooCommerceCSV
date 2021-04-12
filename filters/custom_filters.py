@@ -133,6 +133,13 @@ def format_volume(string: str):
     return float(match_str.group(1))
 
 
+def filter_price(value: str):
+    """ Remove non-numericals from price. Return blank if no valid price remains """
+    regex = re.compile(r"[^\d.]")
+    try: return float(regex.sub("", value))
+    except: return ""
+
+
 def filter_poa_price(string: str):
     """ Check if price is POA return blank string. Used in bromic """
     return "" if "POA" in string.upper() else string
