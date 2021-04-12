@@ -44,8 +44,7 @@ Description: |
     {% if record['CAD DRAWING']|upper|file_exist(flaskapp_server_path_prefix) %}
     <p><a href="{{ path_prefix }}{{ record['CAD DRAWING']|upper }}" target="_blank">CAD Plan</a></p>
     {% endif %}
-Regular price: {{ record['RRP
-(ex GST)'] }}
+Regular price: {{ record['RRP (ex GST)']|filter_price }}
 Categories: {{ record['PRODUCT CATEGORY'] }}
 Length (mm): {{ (record['PRODUCT DEPTH (mm)']|remove_diameter|blank_if_nan0 }}
 Width (mm): {{ (record['PRODUCT WIDTH (mm)']|blank_if_nan0 }}
