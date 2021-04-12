@@ -124,6 +124,11 @@ def filter_poa_price(string: str):
     return "" if "POA" in string.upper() else string
 
 
+def filter_na_price(string: str):
+    """ Check if price is N/A return blank string. Used in kci """
+    return "" if "N/A" in string.upper() else string
+
+
 def volume_is_in_liter(string: str):
     """ Check if the volumn is in Litre unit. Used in bromic """
     return string.lower().endswith("l")
