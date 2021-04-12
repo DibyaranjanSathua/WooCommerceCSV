@@ -8,26 +8,17 @@ Description: |
     <p>{{ record['DESCRIPTION/KEY FEATURES']|indent(4) }}</p>
     <p>&nbsp;</p>
     {% endif %}
-    {% if record['POWER
-DELIVERY'] or record['PRODUCT
-CAPACITY'] or record['PRODUCT
-ORIGIN'] %}
+    {% if record['POWER DELIVERY'] or record['PRODUCT CAPACITY'] or record['PRODUCT ORIGIN'] %}
     <p><strong>Specifications</strong></p>
     <ul>
-        {% if record['POWER
-DELIVERY'] %}
-        <li>KW: {{ record['POWER
-DELIVERY']|indent(8) }}</li>
+        {% if record['POWER DELIVERY'] %}
+        <li>KW: {{ record['POWER DELIVERY']|indent(8) }}</li>
         {% endif %}
-        {% if record['PRODUCT
-CAPACITY'] %}
-        <li>Capacity: {{ record['PRODUCT
-CAPACITY']|indent(8) }}</li>
+        {% if record['PRODUCT CAPACITY'] %}
+        <li>Capacity: {{ record['PRODUCT CAPACITY']|indent(8) }}</li>
         {% endif %}
-        {% if record['PRODUCT
-ORIGIN'] %}
-        <li>Made in: {{ record['PRODUCT
-ORIGIN']|indent(8) }}</li>
+        {% if record['PRODUCT ORIGIN'] %}
+        <li>Made in: {{ record['PRODUCT ORIGIN']|indent(8) }}</li>
         {% endif %}
     </ul>
     <p>&nbsp;</p>
@@ -35,7 +26,8 @@ ORIGIN']|indent(8) }}</li>
     {% if record['ACCESSORIES'] %}
     <p><strong>Accessories</strong></p>
     <ul>
-        <li>{{ record['ACCESSORIES']|indent(8) }}</li>
+        {# ITERATE THROUGH ACCESSORIES #}
+        {# <li>...</li> #}
     </ul>
     <p>&nbsp;</p>
     {% endif %}
@@ -45,6 +37,7 @@ ORIGIN']|indent(8) }}</li>
     <p>Warranty: 12 months</p>
     {% endif %}
     <p>&nbsp;</p>
+    {# LIST ALL BROCHURE LINKS ~ 0 links: skip section | 1 link: Brochure | >1 links: Brochure 1 | Brochure 2 | ... ~ CHECK IF FILES EXIST TOO #}
     {% if record['BROCHURE']|upper|file_exist(flaskapp_server_path_prefix) %}
     <p><a href="{{ path_prefix }}{{ record['BROCHURE']|upper }}" target="_blank">Brochure</a></p>
     {% endif %}
@@ -54,24 +47,23 @@ ORIGIN']|indent(8) }}</li>
 Regular price: {{ record['RRP
 (ex GST)'] }}
 Categories: {{ record['PRODUCT CATEGORY'] }}
-Length (mm): {{ (record['PRODUCT DEPTH
-(mm)']|blank_if_zero }}
-Width (mm): {{ (record['PRODUCT WIDTH
-(mm)']|blank_if_zero }}
-Height (mm): {{ (record['PRODUCT HEIGHT
-(mm)']|blank_if_zero }}
+Length (mm): {{ (record['PRODUCT DEPTH (mm)']|remove_diameter|blank_if_nan0 }}
+Width (mm): {{ (record['PRODUCT WIDTH (mm)']|blank_if_nan0 }}
+Height (mm): {{ (record['PRODUCT HEIGHT (mm)']|blank_if_nan0 }}
 {% if record['IMAGES']|upper|file_exist(flaskapp_server_path_prefix) %}
 Images: {{ path_prefix }}{{ record['IMAGES']|upper }}
 {% endif %}
 Attribute 1 name: Brand
 Attribute 1 value(s): {{ record['BRAND'] }}
 Attribute 2 name: Height
-Attribute 2 value(s): {{ (record['PRODUCT HEIGHT
-(mm)']|blank_if_zero }}
+Attribute 2 value(s): {{ (record['PRODUCT HEIGHT (mm)']|blank_if_nan0 }}
 Attribute 3 name: Depth
-Attribute 3 value(s): {{ (record['PRODUCT DEPTH
-(mm)']|blank_if_zero }}
+Attribute 3 value(s): {{ (record['PRODUCT DEPTH (mm)']|remove_diameter|blank_if_nan0 }}
 Attribute 4 name: Width
-Attribute 4 value(s): {{ (record['PRODUCT WIDTH
-(mm)']|blank_if_zero }}
+Attribute 4 value(s): {{ (record['PRODUCT WIDTH (mm)']|blank_if_nan0 }}
+{# PLEASE CHECK THIS SYNTAX #}
+{% if 'diameter' in record['PRODUCT DEPTH (mm)'] %}
+Attribute 5 name: Diameter
+Attribute 5 value(s): {{ (record['PRODUCT DEPTH (mm)']|remove_diameter|blank_if_nan0 }}
+{% endif %}
 {% endif %}
