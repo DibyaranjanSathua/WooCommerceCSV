@@ -1,0 +1,108 @@
+{% set path_prefix = "https://catercentral.com.au/wp-content/uploads/comcater/rational/" %}
+{% set flaskapp_server_path_prefix = "C:/.devroot/cccsv3/comcater/rational/" %}
+{% if record['Catergory']|upper == 'EQUIPMENT' %}
+SKU: {{ record['CCE_Item_Number'] }}
+Name: {{ record['CCE_Description']|remove_leading_asterisk }}
+Description: |
+    {% if record['CRM_Description'] %}
+    <p>{{ record['CRM_Description']|indent(4) }}</p>
+    <p>&nbsp;</p>
+    {% endif %}
+    {% if record['Connection'] %}
+    <p>Connection: {{ record['Connection']|indent(4) }}</p>
+    {% endif %}
+    {% if record['Energy'] %}
+    <p>Energy: {{ record['Energy']|indent(4) }}</p>
+    {% endif %}
+    {% if record['Feature_1'] or record['Feature_2'] or record['Feature_3'] or record['Feature_4'] or record['Feature_5'] %}
+    <p><strong>Features</strong></p>
+    <ul>
+        {% if record['Feature_1'] %}
+        <li>{{ record['Feature_1']|indent(8) }}</li>
+        {% endif %}
+        {% if record['Feature_2'] %}
+        <li>{{ record['Feature_2']|indent(8) }}</li>
+        {% endif %}
+        {% if record['Feature_3'] %}
+        <li>{{ record['Feature_3']|indent(8) }}</li>
+        {% endif %}
+        {% if record['Feature_4'] %}
+        <li>{{ record['Feature_4']|indent(8) }}</li>
+        {% endif %}
+        {% if record['Feature_5'] %}
+        <li>{{ record['Feature_5']|indent(8) }}</li>
+        {% endif %}
+    </ul>
+    <p>&nbsp;</p>
+    {% endif %}
+    {% if record['Benefit_1'] or record['Benefit_2'] or record['Benefit_3'] or record['Benefit_4'] or record['Benefit_5'] %}
+    <p><strong>Benefits</strong></p>
+    <ul>
+        {% if record['Benefit_1'] %}
+        <li>{{ record['Benefit_1']|indent(8) }}</li>
+        {% endif %}
+        {% if record['Benefit_2'] %}
+        <li>{{ record['Benefit_2']|indent(8) }}</li>
+        {% endif %}
+        {% if record['Benefit_3'] %}
+        <li>{{ record['Benefit_3']|indent(8) }}</li>
+        {% endif %}
+        {% if record['Benefit_4'] %}
+        <li>{{ record['Benefit_4']|indent(8) }}</li>
+        {% endif %}
+        {% if record['Benefit_5'] %}
+        <li>{{ record['Benefit_5']|indent(8) }}</li>
+        {% endif %}
+    </ul>
+    <p>&nbsp;</p>
+    {% endif %}
+    {% if (record['Volts'] and record['Volts'] != '0') or (record['Kw'] and record['Kw'] != '0') or (record['Amps'] and record['Amps'] != '0') %}
+    <p><strong>Specifications</strong></p>
+    <ul>
+        {% if record['Volts'] and record['Volts'] != '0' %}
+        <li>Volts: {{ record['Volts']|indent(8) }}</li>
+        {% endif %}
+        {% if record['Kw'] and record['Kw'] != '0' %}
+        <li>KW: {{ record['Kw']|indent(8) }}</li>
+        {% endif %}
+        {% if record['Amps'] and record['Amps'] != '0' %}
+        <li>Amps: {{ record['Amps']|indent(8) }}</li>
+        {% endif %}
+        {% if record['MJ'] and record['MJ'] != '0' %}
+        <li>MJ: {{ record['MJ']|indent(8) }}</li>
+        {% endif %}
+    </ul>
+    <p>&nbsp;</p>
+    {% endif %}
+    {% if record['Warranty Parts (months)'] and record['Warranty Labour (months)'] and record['Warranty Parts (months)'] != '0' and record['Warranty Labour (months)'] != '0' %}
+    <p>Warranty (Parts/Labour): {{ record['Warranty Parts (months)'] }} / {{ record['Warranty Labour (months)'] }} months</p>
+    {% else %}
+    <p>Warranty: 12 months</p>
+    {% endif %}
+    <p>&nbsp;</p>
+    {% if record['Specsheet_Path']|upper|file_exist(flaskapp_server_path_prefix) %}
+    <p><a href="{{ path_prefix }}{{ record['Specsheet_Path']|upper }}" target="_blank">Specsheet</a></p>
+    {% endif %}
+    {% if record['CAD_Plan']|upper|file_exist(flaskapp_server_path_prefix) or record['CAD_Side']|upper|file_exist(flaskapp_server_path_prefix) or record['CAD_3D']|upper|file_exist(flaskapp_server_path_prefix) %}
+    <p>CAD: {% if record['CAD_Plan']|upper|file_exist(flaskapp_server_path_prefix) %}<a href="{{ path_prefix }}{{ record['CAD_Plan']|upper }}" target="_blank">Plan</a> |{% endif %} {% if record['CAD_Side']|upper|file_exist(flaskapp_server_path_prefix) %}<a href="{{ path_prefix }}{{ record['CAD_Side']|upper }}" target="_blank">Side</a> |{% endif %} {% if record['CAD_3D']|upper|file_exist(flaskapp_server_path_prefix) %}<a href="{{ path_prefix }}{{ record['CAD_3D']|upper }}" target="_blank">3D</a>{% endif %}</p>
+    {% endif %}
+{% if record['CCE_Description'].startswith("*") %}
+Short description: <p class="non-stock-note">NON-STOCK ITEM</p>
+{% endif %}
+Regular price: {{ record['RRP ($AUD)'] }}
+Categories: Cooking > Combination Ovens, Cooking
+Length (mm): {{ (record['Item Dimensions Length']|float * 1000)|blank_if_zero }}
+Width (mm): {{ (record['Item Dimensions Width']|float * 1000)|blank_if_zero }}
+Height (mm): {{ (record['Item Dimensions Height']|float * 1000)|blank_if_zero }}
+{% if record['Image_Path']|upper|file_exist(flaskapp_server_path_prefix) %}
+Images: {{ path_prefix }}{{ record['Image_Path']|upper }}
+{% endif %}
+Attribute 1 name: Brand
+Attribute 1 value(s): {{ record['Item Class'] }}
+Attribute 2 name: Height
+Attribute 2 value(s): {{ (record['Item Dimensions Height']|float * 1000)|blank_if_zero }}
+Attribute 3 name: Depth
+Attribute 3 value(s): {{ (record['Item Dimensions Length']|float * 1000)|blank_if_zero }}
+Attribute 4 name: Width
+Attribute 4 value(s): {{ (record['Item Dimensions Width']|float * 1000)|blank_if_zero }}
+{% endif %}
