@@ -30,6 +30,12 @@ def blank_if_nan0(value: str):
     except: return ""
 
 
+def remove_diameter(value: str):
+    """ Remove 'diameter' from end of value """
+    regex = re.compile(r"[^\d]*diameter.*$")
+    return regex.sub("", value, re.IGNORECASE + re.MULTILINE)
+
+
 def file_exist(filename: str, base_path: str):
     """ Check if file exist on the server. Used in brema """
     if not filename:
