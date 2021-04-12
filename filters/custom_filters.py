@@ -141,8 +141,4 @@ def volume_is_in_kg(string: str):
 
 def swap_sku_name_order(name: str, sku: str):
     """ If SKU is at beginning of name, place at the end. Used in FED """
-    name_new = name
-    if name.startswith(sku) is True:
-        name_only = name.replace(sku, "")
-        name_new = name_only.strip() + " - " + sku
-    return name_new
+	return name.replace(sku, "").strip() + " - " + sku if name.startswith(sku) else name
