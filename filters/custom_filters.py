@@ -30,9 +30,9 @@ def blank_if_nan0(value: str):
     except: return ""
 
 
-def remove_diameter(value: str):
-    """ Remove 'diameter' from end of value """
-    regex = re.compile(r"[^\d]*diameter.*$")
+def remove_nan_suffix(value: str):
+    """ Remove suffix that's not a number """
+    regex re.compile(r"[^\d]+$")
     return regex.sub("", value, re.IGNORECASE + re.MULTILINE)
 
 
