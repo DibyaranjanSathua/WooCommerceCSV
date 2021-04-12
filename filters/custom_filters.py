@@ -22,6 +22,14 @@ def blank_if_zero(value: Union[float, int]):
     return value
 
 
+def blank_if_nan0(value: str):
+    """ Return blank if not a number or zero. """
+    try:
+        num = int(value)
+        return "" if num == 0 else num
+    except: return ""
+
+
 def file_exist(filename: str, base_path: str):
     """ Check if file exist on the server. Used in brema """
     if not filename:
