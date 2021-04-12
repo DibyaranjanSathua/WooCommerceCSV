@@ -26,7 +26,7 @@ def file_exist(filename: str, base_path: str):
     """ Check if file exist on the server. Used in brema """
     if not filename:
         return False
-    filepath = os.path.join(os.path.expanduser("~"), base_path, filename)
+    filepath = os.path.join(base_path, filename)
     if os.path.isfile(filepath):
         return True
     return False
@@ -83,7 +83,7 @@ def product_files(string: str, path_prefix: str, base_path: str):
         name = name.replace("Download", "").strip()
         # base path is used to check if file exists or not
         # path will have leading /. We have to remove it while using in os.path.join
-        local_filepath = os.path.join(os.path.expanduser("~"), base_path, path.lstrip("/"))
+        local_filepath = os.path.join(base_path, path.lstrip("/"))
         if os.path.isfile(local_filepath):
             output += f'<a href="{path_prefix}{path}" target="_blank">{name}</a> | '
 
