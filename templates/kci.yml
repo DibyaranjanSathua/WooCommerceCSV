@@ -1,0 +1,77 @@
+{% set path_prefix = "https://catercentral.com.au/wp-content/uploads/kci/" %}
+{% set flaskapp_server_path_prefix = "C:/.devroot/files/kci/" %}
+{% if record['PRODUCT CATEGORY']|upper != 'X' %}
+SKU: {{ record['MODEL'] }}
+Name: {{ record['PRODUCT NAME'] }}
+Description: |
+    {% if record['DESCRIPTION/KEY FEATURES'] %}
+    <p>{{ record['DESCRIPTION/KEY FEATURES']|indent(4) }}</p>
+    <p>&nbsp;</p>
+    {% endif %}
+    {% if record['POWER
+DELIVERY'] or record['PRODUCT
+CAPACITY'] or record['PRODUCT
+ORIGIN'] %}
+    <p><strong>Specifications</strong></p>
+    <ul>
+        {% if record['POWER
+DELIVERY'] %}
+        <li>KW: {{ record['POWER
+DELIVERY']|indent(8) }}</li>
+        {% endif %}
+        {% if record['PRODUCT
+CAPACITY'] %}
+        <li>Capacity: {{ record['PRODUCT
+CAPACITY']|indent(8) }}</li>
+        {% endif %}
+        {% if record['PRODUCT
+ORIGIN'] %}
+        <li>Made in: {{ record['PRODUCT
+ORIGIN']|indent(8) }}</li>
+        {% endif %}
+    </ul>
+    <p>&nbsp;</p>
+    {% endif %}
+    {% if record['ACCESSORIES'] %}
+    <p><strong>Accessories</strong></p>
+    <ul>
+        <li>{{ record['ACCESSORIES']|indent(8) }}</li>
+    </ul>
+    <p>&nbsp;</p>
+    {% endif %}
+    {% if record['WARRANTY'] and record['WARRANTY'] != '0' %}
+    <p>Warranty: {{ record['WARRANTY'] }}</p>
+    {% else %}
+    <p>Warranty: 12 months</p>
+    {% endif %}
+    <p>&nbsp;</p>
+    {% if record['BROCHURE']|upper|file_exist(flaskapp_server_path_prefix) %}
+    <p><a href="{{ path_prefix }}{{ record['BROCHURE']|upper }}" target="_blank">Brochure</a></p>
+    {% endif %}
+    {% if record['CAD DRAWING']|upper|file_exist(flaskapp_server_path_prefix) %}
+    <p><a href="{{ path_prefix }}{{ record['CAD DRAWING']|upper }}" target="_blank">CAD Plan</a></p>
+    {% endif %}
+Regular price: {{ record['RRP
+(ex GST)'] }}
+Categories: {{ record['PRODUCT CATEGORY'] }}
+Length (mm): {{ (record['PRODUCT DEPTH
+(mm)']|blank_if_zero }}
+Width (mm): {{ (record['PRODUCT WIDTH
+(mm)']|blank_if_zero }}
+Height (mm): {{ (record['PRODUCT HEIGHT
+(mm)']|blank_if_zero }}
+{% if record['IMAGES']|upper|file_exist(flaskapp_server_path_prefix) %}
+Images: {{ path_prefix }}{{ record['IMAGES']|upper }}
+{% endif %}
+Attribute 1 name: Brand
+Attribute 1 value(s): {{ record['BRAND'] }}
+Attribute 2 name: Height
+Attribute 2 value(s): {{ (record['PRODUCT HEIGHT
+(mm)']|blank_if_zero }}
+Attribute 3 name: Depth
+Attribute 3 value(s): {{ (record['PRODUCT DEPTH
+(mm)']|blank_if_zero }}
+Attribute 4 name: Width
+Attribute 4 value(s): {{ (record['PRODUCT WIDTH
+(mm)']|blank_if_zero }}
+{% endif %}
