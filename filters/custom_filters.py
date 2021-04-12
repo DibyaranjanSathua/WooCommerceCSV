@@ -32,7 +32,7 @@ def blank_if_nan0(value: str):
 
 def remove_nan_suffix(value: str):
     """ Remove suffix that's not a number """
-    regex re.compile(r"[^\d]+$")
+    regex = re.compile(r"[^\d]+$")
     return regex.sub("", value, re.IGNORECASE + re.MULTILINE)
 
 
