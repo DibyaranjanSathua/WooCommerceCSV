@@ -24,6 +24,7 @@ class WooCommerceAPI:
             version="wc/v3",
             timeout=timeout
         )
+        self._error_messages = []
         print(f"API timeout set to {timeout}")
 
     def get_all_products(self, skus: Optional[List] = None):
@@ -68,9 +69,19 @@ class WooCommerceAPI:
         endpoint = f"products/batch"
         data = {"update": data}
         response = self._wcapi.post(endpoint=endpoint, data=data)
+        json_response = dict()
         if response.status_code == 200:
             success = True
-        return response.json(), success
+            json_response = response.json()
+            errors = []
+            if "update" in json_response:
+                errors += [
+                    item["error"]["message"] for item in json_response["update"] if "error" in item
+                ]
+            if errors:
+                success = False
+                self._error_messages += errors
+        return json_response, success
 
     def create_multiple_products(self, data: List[dict]):
         """ Create multiple products in a single API call """
@@ -78,9 +89,19 @@ class WooCommerceAPI:
         endpoint = f"products/batch"
         data = {"create": data}
         response = self._wcapi.post(endpoint=endpoint, data=data)
+        json_response = dict()
         if response.status_code in (200, 201):
             success = True
-        return response.json(), success
+            json_response = response.json()
+            errors = []
+            if "create" in json_response:
+                errors += [
+                    item["error"]["message"] for item in json_response["create"] if "error" in item
+                ]
+            if errors:
+                success = False
+                self._error_messages += errors
+        return json_response, success
 
     def create_or_update_products(self, create_data: List[Dict], update_data: List[Dict]):
         """ Create or Update products in batch in a single API call """
@@ -92,10 +113,23 @@ class WooCommerceAPI:
             "update": update_data
         }
         response = self._wcapi.post(endpoint=endpoint, data=data)
-        if response.status_code == 200:
-            print("create or update product request is success")
+        json_response = dict()
+        if response.ok:
             success = True
-        return response.json(), success
+            json_response = response.json()
+            errors = []
+            if "create" in json_response:
+                errors += [
+                    item["error"]["message"] for item in json_response["create"] if "error" in item
+                ]
+            if "update" in json_response:
+                errors += [
+                    item["error"]["message"] for item in json_response["update"] if "error" in item
+                ]
+            if errors:
+                success = False
+                self._error_messages += errors
+        return json_response, success
 
     def get_all_categories(
             self,
@@ -126,6 +160,10 @@ class WooCommerceAPI:
         if response.status_code == 200:
             success = True
         return response.json(), success
+
+    @property
+    def errors(self):
+        return self._error_messages
 
 
 if __name__ == "__main__":

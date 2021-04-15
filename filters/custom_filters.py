@@ -7,6 +7,7 @@ from typing import Union
 import re
 import os
 import ftfy
+import requests
 
 
 def remove_leading_asterisk(string: str):
@@ -105,9 +106,9 @@ def product_files(string: str, path_prefix: str, base_path: str):
     return output
 
 
-def create_image(string: str, path_prefix: str):
+def create_image(string: str, path_prefix: str, split_char: str = ","):
     """ Image path. Used in bromic """
-    images = [f"{path_prefix}{x.strip()}" for x in string.split(",")]
+    images = [f"{path_prefix}{x.strip()}" for x in string.split(split_char)]
     return ",".join(images)
 
 
@@ -140,9 +141,9 @@ def filter_price(value: str):
     except: return ""
 
 
-def filter_poa_price(string: str):
+def filter_poa_price(value: Union[str, int]):
     """ Check if price is POA return blank string. Used in bromic """
-    return "" if "POA" in string.upper() else string
+    return value if type(value) == int else "" if "POA" in value.upper() else value
 
 
 def filter_na_price(string: str):
@@ -162,4 +163,48 @@ def volume_is_in_kg(string: str):
 
 def swap_sku_name_order(name: str, sku: str):
     """ If SKU is at beginning of name, place at the end. Used in FED """
-	return name.replace(sku, "").strip() + " - " + sku if name.startswith(sku) else name
+    return name.replace(sku, "").strip() + " - " + sku if name.startswith(sku) else name
+
+
+def replace_newline_with_space(name: str):
+    """ Replace newline character with space. Used in KCI  """
+    return name.replace("\n", " ")
+
+
+def split_string(string: str, char: str):
+    """ Split string and return a list """
+    return [x.strip() for x in string.split(char)]
+
+
+def brochure_files(string: str, path_prefix: str, base_path: str):
+    """ Create brochure links in description. Used in KCI """
+    # Brohure has \n\n which will create an empty string
+    files = [x for x in string.split("\n") if x]
+    output = ""
+    if len(files) == 1:
+        file = files.pop()
+        # base path is used to check if file exists or not
+        # path will have leading /. We have to remove it while using in os.path.join
+        local_filepath = os.path.join(base_path, file)
+        if os.path.isfile(local_filepath):
+            output = f'<a href="{path_prefix}{file}" target="_blank">Brochure</a>'
+    else:
+        counter = 1
+        for file in files:
+            local_filepath = os.path.join(base_path, file)
+            if os.path.isfile(local_filepath):
+                output += f'<a href="{path_prefix}{file}" target="_blank">Brochure {counter}</a> | '
+                counter += 1
+        output = output.strip().strip("|").strip()
+    return output
+
+
+def check_remote_image_exists(string: str, path_prefix: str, split_char: str = ","):
+    """ Split the images and check if they exist. Return a list of images which exists """
+    images = [f"{path_prefix}{x.strip()}" for x in string.split(split_char)]
+    images_exist = []
+    for image in images:
+        response = requests.head(image)
+        if response.ok:
+            images_exist.append(image)
+    return ",".join(images_exist)

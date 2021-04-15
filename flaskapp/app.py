@@ -119,7 +119,7 @@ def create_or_update():
         table_headers = list(obj.product_upload_table[0].keys())
     return render_template(
         "api_status.html",
-        responses=obj.api_responses,
+        errors=obj.api_errors,
         product_status=obj.product_upload_table,
         table_headers=table_headers
     )

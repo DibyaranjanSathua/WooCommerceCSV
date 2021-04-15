@@ -27,9 +27,11 @@ class SupplierCSV2WoocommerceCSV:
         self._supplier_df = pd.read_csv(
             self._csv_file,
             header=0,
-            encoding="cp437",
+            # encoding="cp437",
             na_filter=False
         )
+        columns = [x.replace("\n", " ") for x in self._supplier_df.columns]
+        self._supplier_df.columns = columns
         self._supplier_records = self._supplier_df.to_dict("records")
 
     def convert(self):
@@ -67,9 +69,16 @@ if __name__ == "__main__":
     # obj.convert()
     # obj.save_to_csv("/tmp/test_brema.csv")
 
+    # obj = SupplierCSV2WoocommerceCSV(
+    #     csv_file="/Users/dibyaranjan/Upwork/client_nick_woocommerce/bromic.csv",
+    #     template="bromic.yml"
+    # )
+    # obj.convert()
+    # obj.save_to_csv("/tmp/test_bromic.csv")
+
     obj = SupplierCSV2WoocommerceCSV(
-        csv_file="/Users/dibyaranjan/Upwork/client_nick_woocommerce/bromic.csv",
-        template="bromic.yml"
+        csv_file="/Users/dibyaranjan/Upwork/client_nick_woocommerce/WooCommerceCSV/csv/kci-aug2020.csv",
+        template="kci.yml"
     )
     obj.convert()
-    obj.save_to_csv("/tmp/test_bromic.csv")
+    obj.save_to_csv("/tmp/test_kci.csv")

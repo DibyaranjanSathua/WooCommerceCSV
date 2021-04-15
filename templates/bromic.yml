@@ -1,5 +1,6 @@
-{% set path_prefix = "https://catercentral.com.au/wp-content/uploads/bromic" %}
+{% set path_prefix = "https://media.bromic.com/media/catalog/product/" %}
 {% set flaskapp_server_path_prefix = "public_html/wp-content/uploads/comcater/brema/" %}
+{# set images = (record['base_image'] + "," + record['additional_images'])|check_remote_image_exists(path_prefix) #}
 {% if record['M'] %}
 SKU: {{ record['M'] }}
 {% if record['meta_title'] %}
@@ -27,7 +28,9 @@ Categories: {{ record['category'] }}
 Length (mm): {{ record['D']|float|blank_if_zero }}
 Width (mm): {{ record['W']|float|blank_if_zero }}
 Height (mm): {{ record['H']|float|blank_if_zero }}
+{# if images #}
 Images: {{ record['base_image']|create_image(path_prefix) }},{{ record['additional_images']|create_image(path_prefix) }}
+{# endif #}
 Attribute 1 name: Brand
 Attribute 1 value(s): Bromic
 Attribute 2 name: Height

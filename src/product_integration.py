@@ -19,7 +19,7 @@ class ProductIntegration:
         ALlProducts = 1
         NewProducts = 2     # Update for new products or for products that don't have images
 
-    PRODUCT_LIMIT = os.environ.get("PRODUCT_LIMIT") or 20
+    PRODUCT_LIMIT = os.environ.get("PRODUCT_LIMIT") or 10
     UPDATE_IMAGE_MODE = UpdateImageCode.ALlProducts
 
     def __init__(
@@ -36,7 +36,7 @@ class ProductIntegration:
         self._map_csv_to_api: Optional[MapCsvToApi] = None
         self._api_data: Optional[List] = None
         self._woocommerce_products: Optional[List] = None
-        self._api_responses: List = []
+        self._api_errors: List = []
         self._products_upload_table: List[Dict] = []
 
     def api_setup(self):
@@ -112,9 +112,6 @@ class ProductIntegration:
                 response, success = self._api.create_multiple_products(
                     data=create_product_data[:ProductIntegration.PRODUCT_LIMIT]
                 )
-                # Save the response if success is False
-                if not success:
-                    self._api_responses.append(response)
                 create_product_data = create_product_data[ProductIntegration.PRODUCT_LIMIT:]
 
             # Send update request in a batch of 100 objects
@@ -122,26 +119,20 @@ class ProductIntegration:
                 response, success = self._api.update_multiple_products(
                     data=update_product_data[:ProductIntegration.PRODUCT_LIMIT]
                 )
-                # Save the response if success is False
-                if not success:
-                    self._api_responses.append(response)
                 update_product_data = update_product_data[ProductIntegration.PRODUCT_LIMIT:]
         else:
             response, success = self._api.create_or_update_products(
                 create_data=create_product_data, update_data=update_product_data
             )
-            # Save the response if success is False
-            if not success:
-                self._api_responses.append(response)
-
+        self._api_errors = self._api.errors
 
     @property
     def api_data(self):
         return self._api_data
 
     @property
-    def api_responses(self):
-        return self._api_responses
+    def api_errors(self):
+        return self._api_errors
 
     @property
     def product_upload_table(self):
