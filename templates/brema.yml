@@ -107,7 +107,7 @@ Height (mm): {{ (record['Item Dimensions Height']|float * 1000)|blank_if_zero }}
 Images: {{ path_prefix }}{{ record['Image_Path']|upper }}
 {% endif %}
 Attribute 1 name: Brand
-Attribute 1 value(s): {{ record['Item Class'] }}
+Attribute 1 value(s): Brema
 Attribute 2 name: Height
 Attribute 2 value(s): {{ (record['Item Dimensions Height']|float * 1000)|blank_if_zero }}
 Attribute 3 name: Depth

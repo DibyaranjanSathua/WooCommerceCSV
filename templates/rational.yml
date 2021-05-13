@@ -1,5 +1,6 @@
 {% set path_prefix = "https://catercentral.com.au/wp-content/uploads/comcater/rational/" %}
 {% set flaskapp_server_path_prefix = "C:/.devroot/cccsv3/comcater/rational/" %}
+{% set default_image = "ICP202.JPG" %}
 {% if record['Catergory']|upper == 'EQUIPMENT' %}
 SKU: {{ record['CCE_Item_Number'] }}
 Name: {{ record['CCE_Description']|remove_leading_asterisk }}
@@ -96,9 +97,11 @@ Width (mm): {{ (record['Item Dimensions Width']|float * 1000)|blank_if_zero }}
 Height (mm): {{ (record['Item Dimensions Height']|float * 1000)|blank_if_zero }}
 {% if record['Image_Path']|upper|file_exist(flaskapp_server_path_prefix) %}
 Images: {{ path_prefix }}{{ record['Image_Path']|upper }}
+{% else %}
+Images: {{ path_prefix }}{{ default_image }}
 {% endif %}
 Attribute 1 name: Brand
-Attribute 1 value(s): {{ record['Item Class'] }}
+Attribute 1 value(s): Rational
 Attribute 2 name: Height
 Attribute 2 value(s): {{ (record['Item Dimensions Height']|float * 1000)|blank_if_zero }}
 Attribute 3 name: Depth
