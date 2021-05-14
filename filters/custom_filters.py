@@ -163,7 +163,7 @@ def volume_is_in_kg(string: str):
 
 def swap_sku_name_order(name: str, sku: str):
     """ If SKU is at beginning of name, place at the end. Used in FED """
-    return name.replace(sku, "").strip() + " - " + sku if name.startswith(sku) else name
+    return name.replace(sku, "").strip(" -") + " - " + sku if name.startswith(sku) else name
 
 
 def replace_newline_with_space(name: str):
@@ -208,3 +208,10 @@ def check_remote_image_exists(string: str, path_prefix: str, split_char: str = "
         if response.ok:
             images_exist.append(image)
     return ",".join(images_exist)
+
+
+def regex_replace(string: str, search: str, replace: str = "", flags: int = 0):
+    """ Multi-purpose regex replace filter """
+    regex = re.compile(search)
+    return regex.sub(replace, string, flags)
+
