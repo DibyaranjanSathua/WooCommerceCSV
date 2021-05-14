@@ -1,0 +1,38 @@
+{% set path_prefix = "" %}
+{% set flaskapp_server_path_prefix = "C:/.devroot/fedimgs2/" %}
+SKU: {{ record['SKU'] }}
+Name: {{ record['Name']|swap_sku_name_order(record['SKU']) }}
+Description: |
+    {% if record['Description'] %}
+    {{ record['Description']|repair_utf8_encoding|remove_div_span_tags|format_description|indent(4) }}
+    <p>&nbsp;</p>
+    {% endif %}
+    {% if record['Power'] or record['Weight'] %}
+    <p><strong>Specifications</strong></p>
+    <ul>
+        {% if record['Power'] %}
+        <li><strong>Power:</strong> {{ record['Power']|indent(8) }}</li>
+        {% endif %}
+        {% if record['Weight'] %}
+        <li><strong>Weight: {{ record['Weight']|indent(8) }}</li>
+        {% endif %}
+    </ul>
+    {% endif %}
+Regular price: {{ record['Price'] }}
+Categories: {{ record['Categories']|split_string(",")|unique|join(", ") }}
+Length (mm): {{ (record['Depth (mm)']|blank_if_zero) }}
+Width (mm): {{ (record['Width (mm)']|blank_if_zero) }}
+Height (mm): {{ (record['Height (mm)']|blank_if_zero) }}
+Images: {{ record['Image URL'] }}
+Attribute 1 name: Brand
+{% if record['Manufacturer'] == "" %}
+Attribute 1 value(s): FED
+{% else %}
+Attribute 1 value(s): {{ record['Manufacturer']|regex_replace("\.","") }}
+{% endif %}
+Attribute 2 name: Height
+Attribute 2 value(s): {{ (record['Height (mm)']|blank_if_zero) }}
+Attribute 3 name: Depth
+Attribute 3 value(s): {{ (record['Depth (mm)']|blank_if_zero) }}
+Attribute 4 name: Width
+Attribute 4 value(s): {{ (record['Width (mm)']|blank_if_zero) }}

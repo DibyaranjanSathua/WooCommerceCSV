@@ -96,6 +96,8 @@ Width (mm): {{ (record['Item Dimensions Width']|float * 1000)|blank_if_zero }}
 Height (mm): {{ (record['Item Dimensions Height']|float * 1000)|blank_if_zero }}
 {% if record['Image_Path']|upper|file_exist(flaskapp_server_path_prefix) %}
 Images: {{ path_prefix }}{{ record['Image_Path']|upper }}
+{% elif record['Image_Path']|upper|regex_replace("-[^-.]*\.", ".")|file_exist(flaskapp_server_path_prefix) %}
+Images: {{ path_prefix }}{{ record['Image_Path']|upper|regex_replace("-[^-.]*\.", ".") }}
 {% endif %}
 Attribute 1 name: Brand
 Attribute 1 value(s): Vitamix
