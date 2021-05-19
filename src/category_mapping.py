@@ -29,8 +29,9 @@ class CategoryMapper:
         )
         # from the df, create a mapping dictionary
         for i in range(len(mapping_df)):
-            category_mapping_dict[mapping_df.loc[i, mapping_file_column[0]]] = \
-                mapping_df.loc[i, mapping_file_column[1]]
+            category_mapping_dict[mapping_df.loc[i, mapping_file_column[0]].strip()] = \
+                self.generate_mapped_category(mapping_df.loc[i, mapping_file_column[1]])
+
         self.main_df = pd.read_csv(
             self.main_csv_file,
             header=0,
@@ -44,6 +45,14 @@ class CategoryMapper:
                 ]
             )
         )
+
+    @staticmethod
+    def generate_mapped_category(category):
+        """ Convert parent > child category to parent, parent > child category """
+        if category:
+            parent = category.split(">")[0].strip()
+            return f"{parent}, {category}"
+        return category
 
     def save_to_csv(self, output_csv):
         """ Save the modified dataframe to csv """
