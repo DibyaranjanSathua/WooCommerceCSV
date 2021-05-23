@@ -45,7 +45,10 @@ def submit():
     # Save the input CSV file
     input_csv_name_orig = Path(input_csv.filename)
     input_csv_name = f"input_{input_csv_name_orig.stem}_{now_str}.csv"
-    input_csv_path = PROJECT_ROOT / "flaskapp" / app.config["CSV_FILES"] / input_csv_name
+    input_csv_path = PROJECT_ROOT / "flaskapp" / app.config["CSV_FILES"]
+    if not input_csv_path.is_dir():
+        input_csv_path.mkdir()
+    input_csv_path = input_csv_path / input_csv_name
     input_csv.save(input_csv_path)
 
     obj = SupplierCSV2WoocommerceCSV(

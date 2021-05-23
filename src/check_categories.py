@@ -51,10 +51,11 @@ class CheckCategories:
         self.api_setup()
         for record in self._woocommerce_records:
             category = record["Categories"]
-            list_of_categories = [x.strip() for x in category.split(",")]
-            for catname in list_of_categories:
-                if catname not in self._categories:
-                    self._categories[catname] = self.get_category_id(catname)
+            if category is not None:
+                list_of_categories = [x.strip() for x in category.split(",")]
+                for catname in list_of_categories:
+                    if catname not in self._categories:
+                        self._categories[catname] = self.get_category_id(catname)
 
     @staticmethod
     def filter_category(category_list: List, category: str):
