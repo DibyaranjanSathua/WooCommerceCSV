@@ -215,3 +215,8 @@ def regex_replace(string: str, search: str, replace: str = "", flags: int = 0):
     regex = re.compile(search)
     return regex.sub(replace, string, flags)
 
+
+def esc_quot(string: str):
+    """ HTML escape quotes """
+    return string.replace('"', "&quot;")
+
