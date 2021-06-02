@@ -19,7 +19,7 @@ Description: |
     </ul>
     {% endif %}
 Regular price: {{ record['Price'] }}
-Categories: {{ record['Categories']|split_string(",")|unique|join(", ") }}
+Categories: {{ record['Categories']|esc_special_symbol|split_string(",")|unique|join(", ") }}
 Length (mm): {{ (record['Depth (mm)']|blank_if_zero) }}
 Width (mm): {{ (record['Width (mm)']|blank_if_zero) }}
 Height (mm): {{ (record['Height (mm)']|blank_if_zero) }}

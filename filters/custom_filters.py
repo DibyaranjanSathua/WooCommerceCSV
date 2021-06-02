@@ -220,3 +220,8 @@ def esc_quot(string: str):
     """ HTML escape quotes """
     return string.replace('"', "&quot;")
 
+
+def esc_special_symbol(string: str):
+    """ Replace special symbol with html """
+    ampersand_regex = re.compile("&(?!amp;)")
+    return ampersand_regex.sub("&amp;", string)
