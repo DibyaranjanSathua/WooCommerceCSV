@@ -1,5 +1,6 @@
 {% set path_prefix = "https://catercentral.com.au/wp-content/uploads/kci/" %}
 {% set flaskapp_server_path_prefix = "C:/.devroot/files/kci/" %}
+{ set images = record['IMAGES']|upper|get_existing_images(flaskapp_server_path_prefix, path_prefix, "\n") }
 {% if record['PRODUCT CATEGORY']|upper != 'X' %}
 SKU: {{ record['MODEL'] }}
 Name: {{ record['PRODUCT NAME']|replace_newline_with_space }}
@@ -50,8 +51,8 @@ Categories: {{ record['PRODUCT CATEGORY'] }}
 Length (mm): {{ record['PRODUCT DEPTH (mm)']|remove_nan_suffix|blank_if_nan0 }}
 Width (mm): {{ record['PRODUCT WIDTH (mm)']|remove_nan_suffix|blank_if_nan0 }}
 Height (mm): {{ record['PRODUCT HEIGHT (mm)']|remove_nan_suffix|blank_if_nan0 }}
-{% if record['IMAGES']|upper|file_exist(flaskapp_server_path_prefix) %}
-Images: {{ record['IMAGES']|upper|create_image(path_prefix, "\n") }}
+{% if images %}
+Images: {{ images }}
 {% endif %}
 Attribute 1 name: Brand
 Attribute 1 value(s): {{ record['BRAND'] }}

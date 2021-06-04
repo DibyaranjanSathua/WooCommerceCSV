@@ -225,3 +225,17 @@ def esc_special_symbol(string: str):
     """ Replace special symbol with html """
     ampersand_regex = re.compile("&(?!amp;)")
     return ampersand_regex.sub("&amp;", string)
+
+
+def get_existing_images(string: str, base_path: str, path_prefix: str, split_char: str = ","):
+    """
+    Return list of images that exist. Used im KCI.
+    This is combination of file_exist and create_image functions
+    """
+    images = []
+    input_images = [x.strip() for x in string.split(split_char)]
+    for image in input_images:
+        filepath = os.path.join(base_path, image)
+        if os.path.isfile(filepath):
+            images.append(f"{path_prefix}{image}")
+    return images
