@@ -239,3 +239,8 @@ def get_existing_images(string: str, base_path: str, path_prefix: str, split_cha
         if os.path.isfile(filepath):
             images.append(f"{path_prefix}{image}")
     return images
+
+
+def remove_empty_lines(string: str):
+    """ Remove empty lines. Used in Rational  """
+    return "\n".join([x for x in string.split("\n") if x])

@@ -6,7 +6,7 @@ SKU: {{ record['CCE_Item_Number'] }}
 Name: {{ record['CCE_Description']|remove_leading_asterisk }}
 Description: |
     {% if record['CRM_Description'] %}
-    <p>{{ record['CRM_Description']|indent(4) }}</p>
+    <p>{{ record['CRM_Description']|remove_empty_lines|indent(4) }}</p>
     <p>&nbsp;</p>
     {% endif %}
     {% if record['Connection'] %}
